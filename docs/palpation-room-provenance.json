@@ -1,6 +1,6 @@
 {
   "asset": "palpation-room",
-  "version": "1.0",
+  "version": "1.0.1",
   "prepared_date": "2026-10-15",
   "tool": "Blender 4.5.3 LTS",
   "purpose": "Synthetic four-step Leopold palpation teaching room. Patient and examiner are fictional adults. No patient photographs or records.",
@@ -18,6 +18,7 @@
   },
   "authored_changes": [
     "Supine adult torso and pillow, lower backrest; opaque chest/pelvis coverings and separate privacy abdomen cover",
+    "Lift connected head and neck by .035m in illustrative scene; lower backrest by .05m, halve pillow thickness and reposition to prevent skull burial",
     "Continuous analytic pregnant skin mesh with subtle navel and matched raycast/height formula",
     "Paired knee contours under an opaque drape with Knees_flex morph",
     "Eight distinct left/right examiner hand poses using genuine palm/finger/forearm topology and short scrub cuffs",
@@ -746,12 +747,12 @@
   },
   "outputs": {
     "glb": "public/models/palpation-room.glb",
-    "glb_bytes": 2890852,
-    "glb_sha256": "97f110f2966d851458a9c9dbb06fc78cb87139d6b995f968faaa1c5ffa2b260d",
+    "glb_bytes": 3055724,
+    "glb_sha256": "d4e33800224643f4c083e5b929320274cd8b5529e75d8ed012781028edf09959",
     "blend": "assets-source/palpation-room.blend",
-    "blend_sha256": "37cd269f6332e22b2f80376323104c250a0c6bd7a1a59cec17c094a1e2459e78",
+    "blend_sha256": "35de41912d75cae58a6287e5a05d0fd95b3f2d3ae7d061b4ca2be064f7a7d210",
     "builder": "scripts/build_palpation_room.py",
-    "script_sha256": "35d9e0284518aaa5690e33236ad27567981525399059af2388a28eaefb05430e",
+    "script_sha256": "6a8936f49a3a6c90e51d8ad6283e3eb03c35812206f271fcfc130e965371f377",
     "nodes": 73,
     "triangles": 120852
   },

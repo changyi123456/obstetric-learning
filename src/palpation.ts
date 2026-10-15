@@ -7,6 +7,12 @@ export const PALPATION_KEY='obstetric-learning.palpation.v1';
 export const PHASES=['床邊準備','第一段','第二段','第三段','第四段','胎心監測','收尾照護','練習摘要'];
 export const CASES={left:{name:'案例 A',back:'L' as Side,nameTag:'林安安',dob:'1994-06-18'},right:{name:'案例 B',back:'R' as Side,nameTag:'陳欣怡',dob:'1992-09-25'}};
 export type CaseId=keyof typeof CASES;
+export function identityErrors(caseId:CaseId,name:string,dob:string){
+ const cleanedName=name.normalize('NFKC').replace(/\s+/g,''),date=dob.normalize('NFKC').replace(/\s+/g,'');
+ const parts=date.match(/^(\d{4})(\d{2})(\d{2})$/)??date.match(/^(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})日?$/);
+ const normalized=parts?`${parts[1]}-${parts[2].padStart(2,'0')}-${parts[3].padStart(2,'0')}`:null;
+ return {name:!cleanedName?'請輸入手環上的姓名。':cleanedName!==CASES[caseId].nameTag?'姓名與手環不一致，請重新核對。':null,dob:!date?'請輸入手環上的出生日期。':!normalized?'請輸入西元年月日，可用斜線、短橫線或八位數字。':normalized!==CASES[caseId].dob?'出生日期與手環不一致，請重新核對年月日。':null};
+}
 export const PREP=[
  {id:'wash',title:'接觸前手部衛生',prompt:'進入床邊，先完成哪個動作？',choices:['完成手部衛生','直接開始觸診'],reply:'你先洗手，我比較放心。'},
  {id:'identity',title:'核對兩項身分資料',prompt:'請核對手環的姓名與出生日期。',choices:[],reply:'姓名和生日都正確。'},
@@ -38,7 +44,7 @@ export const motionReady=(s:PalpationState,stage:number)=>s.stages[stage].paths.
 export function stageClue(s:PalpationState){if(s.phase===2){const back=CASES[s.caseId].back,contactSide=s.side==='L'?'R':'L';return `母體${contactSide==='L'?'左':'右'}側：${contactSide===back?'連續、平滑的較大面。':'不規則、較小的小肢體突起。'}`;}return STAGES[Math.max(0,Math.min(3,s.phase-1))].clue;}
 export function monitorMissing(s:PalpationState,step=s.monitor.step):string|null{const m=s.monitor;switch(step){case 0:return m.inventory.length<INVENTORY.length?'用物尚未齊備。':m.connections.length<3?'請連接電源、FHR 與 TOCO 導線。':!m.power?'請開機並完成教學功能檢查。':null;case 1:return !m.cooperation?'先說明並請產婦配合稍抬臀部。':!m.beltsUnder?'尚未放入兩條獨立固定帶。':null;case 2:return !m.tocoPlaced?'選對 TOCO 探頭，移到子宮底附近較平坦處並確認。':null;case 3:return !m.gel?'胎心超音波探頭需先使用凝膠。':!m.usPlaced?'請搜尋清晰穩定的胎心訊號後確認位置。':null;case 4:return !m.pulse?'請從手腕核對母體脈搏。':!m.differentiated?'請比較母體脈搏與目前胎心訊號。':m.belts.some(x=>x!=='comfortable')?'兩條固定帶都要各自調整到舒適且穩定。':!m.comfort?'調整後再次詢問產婦舒適度。':null;case 5:return !m.zero?'先在子宮放鬆時完成 TOCO 基線歸零。':!m.recorded?'尚未啟動記錄。':!m.volume?'請調整音量並詢問是否合適。':!m.explained?'請說明實際監測時間依機型與課程 SOP，並確認後續安排。':null;case 6:return m.recording?'請先停止記錄，再進入收尾。':!m.observed?'請完成教學片段的觀察紀錄。':null;default:return null;}}
 export type Action=
- |{type:'prep';id:string;correct:boolean}|{type:'orient';value:'head'|'feet'}|{type:'side';value:Side}|{type:'gentle';value:boolean}
+ |{type:'prep';id:string;correct:boolean}|{type:'identity';name:string;dob:string}|{type:'orient';value:'head'|'feet'}|{type:'side';value:Side}|{type:'gentle';value:boolean}
  |{type:'motion';progress:number;finish:boolean}|{type:'answer';value:number}|{type:'retry'}|{type:'next'}|{type:'phase';value:Phase}
  |{type:'item';value:number}|{type:'connect';value:string}|{type:'power'}|{type:'cooperate'}|{type:'beltsUnder'}|{type:'gel'}
  |{type:'probe';probe:Probe;position:XY;finish:boolean}|{type:'pulse'}|{type:'compare';value:boolean}|{type:'belt';index:0|1;value:string}|{type:'comfort'}
@@ -52,6 +58,7 @@ export function palpationReducer(state:PalpationState,a:Action):PalpationState {
  const add=(arr:string[],v:string)=>{if(!arr.includes(v))arr.push(v);};
  if(a.type==='message'){s.feedback=a.text;s.level='info';return s;}
  if(a.type==='phase'){const furthest=s.complete?7:s.stages.every(x=>x.done)?(s.monitor.observed&&!s.monitor.recording?6:5):s.prep.length===PREP.length?s.stages.findIndex(x=>!x.done)+1:0;if(a.value<=Math.max(furthest,state.phase)){s.phase=a.value as Phase;if(a.value>=1&&a.value<=4&&s.stages[a.value-1].done)s.orientation=a.value===4?'feet':'head';s.feedback='已切換練習階段，其他已完成項目保留。';s.level='info';}return s;}
+ if(a.type==='identity'){if(s.phase!==0)return state;const errors=identityErrors(s.caseId,a.name,a.dob);if(errors.name||errors.dob)return fail([errors.name,errors.dob].filter(Boolean).join(' '));add(s.prep,'identity');return ok('已完成：核對兩項身分資料。','姓名和生日都正確。');}
  if(a.type==='prep'){if(s.phase!==0)return state;const p=PREP.find(x=>x.id===a.id);if(!p)return state;if(!a.correct)return fail('這個做法未完成目前的照護需求，請依目的再選一次。',a.id==='privacy'?'請先幫我維護隱私。':undefined);if(a.id==='expose'&&(!s.prep.includes('privacy')||!s.prep.includes('position')))return fail('先完成隱私與擺位，再露出檢查所需腹部。');add(s.prep,p.id);return ok(`已完成：${p.title}。`,p.reply);}
  if(a.type==='orient'){s.orientation=a.value;return ok(a.value==='head'?'目前面向頭端。':'目前面向腳端。');}
  if(a.type==='side'){s.side=a.value;return ok(`目前${a.value==='L'?'左':'右'}手觸診，另一手固定。`);}

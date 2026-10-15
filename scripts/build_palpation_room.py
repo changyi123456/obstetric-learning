@@ -39,6 +39,10 @@ def webpoint(o,p):return C.inverted()@(o.matrix_world@p)
 hipweb=Vector((0,.78,.10));G=Matrix.Translation(W(hipweb))@Matrix.Rotation(math.radians(-26),4,'X')@Matrix.Translation(-W(hipweb))
 for name in ['Patient_head','Patient_body','Patient_left_hand','Patient_right_hand','Patient_chest']:
     o=bpy.data.objects[name];o.matrix_world=G@o.matrix_world
+# Keep the back of the skull above the pillow instead of exposing only the face.
+# Lift the connected neck skin with the head; eye/hair children follow its root.
+for name in ['Patient_head','Patient_body']:
+    o=bpy.data.objects[name];o.matrix_world=Matrix.Translation(W((0,.035,0)))@o.matrix_world
 bpy.context.view_layer.update()
 # Retain the continuous neck/chest patch, but replace both original split arms.
 # A single CC0 skin surface now runs from covered upper arm through wrist to
@@ -111,9 +115,10 @@ for side,short,sign,name in [('L','l',1,'Patient_left_hand'),('R','r',-1,'Patien
     sleeve=mesh('Patient_short_sleeve_'+side,sleeve_vertices,sleeve_faces,gownmat)
     mod=sleeve.modifiers.new('Sewn cotton thickness','SOLIDIFY');mod.thickness=.002
     patient_arm_api[name]={'wristWeb':list(wrist),'shoulderWeb':list(shoulder),'elbowWeb':list(elbow),'scope':'One continuous upper-arm/forearm/palm/finger mesh; preserve baseline transform; only small gesture offsets.'}
-set_pose(bpy.data.objects['Mattress_backrest'],(0,.83,-.42),12)
-set_pose(bpy.data.objects['Bed_backrest_support'],(0,.755,-.43),12)
-set_pose(bpy.data.objects['Pillow'],(0,.965,-.66),12)
+set_pose(bpy.data.objects['Mattress_backrest'],(0,.78,-.42),12)
+set_pose(bpy.data.objects['Bed_backrest_support'],(0,.705,-.43),12)
+pillow=bpy.data.objects['Pillow'];pillow.scale.z=.5
+set_pose(pillow,(0,.885,-.62),12)
 
 # Keep the actual patterned gown around the chest/upper arms, remove its old
 # maternity-belly portion. An opaque chest cover always remains in the model.
@@ -146,7 +151,8 @@ for j in range(NZ+1):
     t=j/NZ
     for i in range(NX+1):
         x=-.285+i/NX*.57;ztop=-.52+.09*math.exp(-(x/.075)**2);z=ztop*(1-t)+chest_end(x)*t
-        y=(.925-.065*(abs(x)/.285)**1.8)*(1-t)+chest_lower_y(x)*t+.004*math.sin(34*x+19*z)
+        neckline_lift=.075*math.exp(-(x/.11)**2)*(1-t)**2
+        y=(.925-.065*(abs(x)/.285)**1.8)*(1-t)+chest_lower_y(x)*t+.004*math.sin(34*x+19*z)+neckline_lift
         cv.append((x,y,z));cuv.append((i/NX*.45,j/NZ*.45))
 for j in range(NZ):
     for i in range(NX):a=j*(NX+1)+i;cf.append((a,a+NX+1,a+NX+2,a+1))
@@ -388,10 +394,10 @@ required=['Palpation_abdomen','Privacy_cover','Chest_cover','Pelvis_cover','Belt
 assert all(name in names for name in required)
 triangles=sum(gltf['accessors'][p['indices']]['count']//3 for m in gltf['meshes'] for p in m['primitives'])
 provenance={
- 'asset':'palpation-room','version':'1.0','prepared_date':'2026-10-15','tool':'Blender '+bpy.app.version_string,
+ 'asset':'palpation-room','version':'1.0.1','prepared_date':'2026-10-15','tool':'Blender '+bpy.app.version_string,
  'purpose':'Synthetic four-step Leopold palpation teaching room. Patient and examiner are fictional adults. No patient photographs or records.',
  'source':{'shared_editable_room':'assets-source/fhr-room.blend','shared_room_sha256':hashlib.sha256((ROOT/'assets-source/fhr-room.blend').read_bytes()).hexdigest(),'shared_helpers':'scripts/build_fhr_room.py, pure construction functions only via AST; no top-level code executed','core_repository':'https://github.com/makehumancommunity/makehuman','core_commit':'a8bc2d54ff0ac92e78ff71431b1023eda42bf482','core_license':'CC0-1.0','license_file':'licenses/MakeHuman-core-CC0.md','official_asset_statement':'https://static.makehumancommunity.org/about/license.html','source_license_distinction':'Only explicitly CC0 basemesh, adult female targets, face units, eyes and skin weights are reused. MakeHuman AGPL executable/source code is not included or executed.','no_complete_hand_pose_asset_found':'The project resource review found no suitable complete authorized four-maneuver set; these poses are newly authored from the CC0 palm/finger/forearm topology.'},
- 'authored_changes':['Supine adult torso and pillow, lower backrest; opaque chest/pelvis coverings and separate privacy abdomen cover','Continuous analytic pregnant skin mesh with subtle navel and matched raycast/height formula','Paired knee contours under an opaque drape with Knees_flex morph','Eight distinct left/right examiner hand poses using genuine palm/finger/forearm topology and short scrub cuffs','Two independently controlled full belt loops and two repositionable transducers','Unbranded gel bottle, tissue and recording paper'],
+ 'authored_changes':['Supine adult torso and pillow, lower backrest; opaque chest/pelvis coverings and separate privacy abdomen cover','Lift connected head and neck by .035m in illustrative scene; lower backrest by .05m, halve pillow thickness and reposition to prevent skull burial','Continuous analytic pregnant skin mesh with subtle navel and matched raycast/height formula','Paired knee contours under an opaque drape with Knees_flex morph','Eight distinct left/right examiner hand poses using genuine palm/finger/forearm topology and short scrub cuffs','Two independently controlled full belt loops and two repositionable transducers','Unbranded gel bottle, tissue and recording paper'],
  'axes':{'units':'metres','up':'+Y','head':'-Z','feet':'+Z','maternal_left':'+X','maternal_right':'-X','examiner_hand_labels':'L/R always refer to the examiner\u2019s actual physical hand, never the maternal side. s1/s2 examiner faces head, s4 examiner faces feet.'},
  'abdomen':{'node':'Palpation_abdomen','xRadius':RX,'zRadius':RZ,'centerZ':CZ,'baseY':CY,'height':RY,'mapping':'x=.245*u; z=-.020+.345*v','domain':'u*u+v*v <= 1; interactive path should stay below 0.94 squared radius','heightFunction':'y=.835+.300*sqrt(max(0,1-(x/.245)^2-((z+.020)/.345)^2))-.009*exp(-(x/.022)^2-((z-.025)/.025)^2)','normal':'normalize([-dy/dx,1,-dy/dz]); central differences epsilon=.0001 m match the builder','hoverOffset':.025,'collision':'Use the exported mesh raycast or identical analytic surface. Contact-root placement = surfaceTarget - rotation*contactLocal + normal*hoverOffset; hoverOffset zero means tangent contact. The whole hand stays above its contact tangent plane.'},
  'anchors':{name:{'uv':list(uv),'web':list(UV(*uv))} for name,uv in anchors.items()},
