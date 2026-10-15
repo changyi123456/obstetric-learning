@@ -1,6 +1,6 @@
 {
   "asset": "palpation-room",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "prepared_date": "2026-10-15",
   "tool": "Blender 4.5.3 LTS",
   "purpose": "Synthetic four-step Leopold palpation teaching room. Patient and examiner are fictional adults. No patient photographs or records.",
@@ -23,7 +23,10 @@
     "Paired knee contours under an opaque drape with Knees_flex morph",
     "Eight distinct left/right examiner hand poses using genuine palm/finger/forearm topology and short scrub cuffs",
     "Two independently controlled full belt loops and two repositionable transducers",
-    "Unbranded gel bottle, tissue and recording paper"
+    "Unbranded extended preparation tray, hinged gel cap, pressable hand sanitizer, tissue and recording paper",
+    "Integrated monitor controls, recessed paired sockets, loose keyed cable plugs, independent belt buckles, paper return marker and open recovery box",
+    "U-shaped pleated privacy curtain with three real gather/extend panels and explicit open/closed transforms",
+    "Loose privacy cloth envelope clears steep abdominal skin edges while retaining its existing root and coverage"
   ],
   "axes": {
     "units": "metres",
@@ -587,6 +590,1408 @@
       "hoverOffset": 0.025
     }
   },
+  "equipment": {
+    "Tray_anchor": {
+      "role": "tray",
+      "contactLocal": [
+        0,
+        0,
+        0
+      ],
+      "defaultVisible": true,
+      "size": [
+        0.66,
+        0.64
+      ],
+      "surfaceNormal": [
+        0,
+        1,
+        0
+      ],
+      "worldPosition": [
+        1.0299999713897705,
+        1.100000023841858,
+        0.18000000715255737
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.0299999713897705,
+        1.100000023841858,
+        0.18000000715255737
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Gel_bottle": {
+      "role": "gel bottle",
+      "contactLocal": [
+        0,
+        0.067,
+        0
+      ],
+      "defaultVisible": true,
+      "restOrientation": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "dispenseAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "worldPosition": [
+        0.800000011920929,
+        1.1050000190734863,
+        0.10000000149011612
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        0.800000011920929,
+        1.1050000190734863,
+        0.10000000149011612
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Gel_cap": {
+      "role": "gel cap hinge",
+      "contactLocal": [
+        0,
+        0.004,
+        0.015
+      ],
+      "defaultVisible": true,
+      "hingeAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "closedRadians": 0,
+      "openRadians": -1.919862,
+      "rootNote": "Child of Gel_bottle, origin at back edge of cap; rotate local X from baseline.",
+      "worldPosition": [
+        0.800000011920929,
+        1.2690000534057617,
+        0.08500000089406967
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Gel_bottle",
+      "localPosition": [
+        0.0,
+        0.1640000343322754,
+        -0.015000000596046448
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Hand_sanitizer": {
+      "role": "hand sanitizer",
+      "contactLocal": [
+        0,
+        0.072,
+        0
+      ],
+      "defaultVisible": true,
+      "worldPosition": [
+        0.800000011920929,
+        1.1050000190734863,
+        0.36000001430511475
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        0.800000011920929,
+        1.1050000190734863,
+        0.36000001430511475
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Sanitizer_pump": {
+      "role": "sanitizer pump",
+      "contactLocal": [
+        0,
+        0.01,
+        0.015
+      ],
+      "defaultVisible": true,
+      "pressAxisLocal": [
+        0,
+        -1,
+        0
+      ],
+      "pressTravel": 0.014,
+      "worldPosition": [
+        0.800000011920929,
+        1.274999976158142,
+        0.36000001430511475
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Hand_sanitizer",
+      "localPosition": [
+        0.0,
+        0.16999995708465576,
+        0.0
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "FHR_transducer": {
+      "role": "ultrasound transducer",
+      "contactLocal": [
+        0,
+        -0.015,
+        0
+      ],
+      "defaultVisible": true,
+      "axisLocal": [
+        0,
+        1,
+        0
+      ],
+      "surfaceOffset": 0.019,
+      "abdomenUV": [
+        0.56,
+        0.28
+      ],
+      "cableExitLocal": [
+        0.062,
+        0.003,
+        0
+      ],
+      "worldPosition": [
+        1.2000000476837158,
+        1.125,
+        0.009999999776482582
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.2000000476837158,
+        1.125,
+        0.009999999776482582
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "TOCO_transducer": {
+      "role": "TOCO transducer",
+      "contactLocal": [
+        0,
+        -0.015,
+        0
+      ],
+      "defaultVisible": true,
+      "axisLocal": [
+        0,
+        1,
+        0
+      ],
+      "surfaceOffset": 0.019,
+      "abdomenUV": [
+        0,
+        -0.64
+      ],
+      "cableExitLocal": [
+        0.062,
+        0.003,
+        0
+      ],
+      "worldPosition": [
+        0.9900000095367432,
+        1.125,
+        0.009999999776482582
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        0.9900000095367432,
+        1.125,
+        0.009999999776482582
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Clean_tissue": {
+      "role": "clean tissue",
+      "contactLocal": [
+        0,
+        0.009,
+        0
+      ],
+      "defaultVisible": true,
+      "worldPosition": [
+        1.100000023841858,
+        1.1119999885559082,
+        0.23000000417232513
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.100000023841858,
+        1.1119999885559082,
+        0.23000000417232513
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Monitor_recording_paper": {
+      "role": "recording paper",
+      "contactLocal": [
+        0,
+        0.002,
+        0
+      ],
+      "defaultVisible": true,
+      "worldPosition": [
+        1.100000023841858,
+        1.1119999885559082,
+        0.4000000059604645
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.100000023841858,
+        1.1119999885559082,
+        0.4000000059604645
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Tray_return": {
+      "role": "paper return target",
+      "contactLocal": [
+        0,
+        0,
+        0
+      ],
+      "defaultVisible": true,
+      "dropRadius": 0.12,
+      "worldPosition": [
+        1.100000023841858,
+        1.1059999465942383,
+        0.4000000059604645
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.100000023841858,
+        1.1059999465942383,
+        0.4000000059604645
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Monitor_device": {
+      "role": "monitor device",
+      "contactLocal": [
+        0,
+        0,
+        0.075
+      ],
+      "defaultVisible": true,
+      "frontNormal": [
+        0,
+        0,
+        1
+      ],
+      "worldPosition": [
+        1.0499999523162842,
+        1.3200000524520874,
+        -0.5299999713897705
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.0499999523162842,
+        1.3200000524520874,
+        -0.5299999713897705
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Control_power": {
+      "role": "monitor button",
+      "contactLocal": [
+        0,
+        0,
+        0.005
+      ],
+      "defaultVisible": true,
+      "axisLocal": [
+        0,
+        0,
+        1
+      ],
+      "pressTravel": 0.004,
+      "turnRadians": null,
+      "worldPosition": [
+        0.8700000047683716,
+        1.1699999570846558,
+        -0.4180000126361847
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Monitor_device",
+      "localPosition": [
+        -0.1799999475479126,
+        -0.15000009536743164,
+        0.11199995875358582
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Control_zero": {
+      "role": "monitor button",
+      "contactLocal": [
+        0,
+        0,
+        0.005
+      ],
+      "defaultVisible": true,
+      "axisLocal": [
+        0,
+        0,
+        1
+      ],
+      "pressTravel": 0.004,
+      "turnRadians": null,
+      "worldPosition": [
+        0.9900000095367432,
+        1.1699999570846558,
+        -0.4180000126361847
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Monitor_device",
+      "localPosition": [
+        -0.059999942779541016,
+        -0.15000009536743164,
+        0.11199995875358582
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Control_record": {
+      "role": "monitor button",
+      "contactLocal": [
+        0,
+        0,
+        0.005
+      ],
+      "defaultVisible": true,
+      "axisLocal": [
+        0,
+        0,
+        1
+      ],
+      "pressTravel": 0.004,
+      "turnRadians": null,
+      "worldPosition": [
+        1.1100000143051147,
+        1.1699999570846558,
+        -0.4180000126361847
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Monitor_device",
+      "localPosition": [
+        0.060000061988830566,
+        -0.15000009536743164,
+        0.11199995875358582
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Control_volume": {
+      "role": "volume dial",
+      "contactLocal": [
+        0,
+        0,
+        0.008
+      ],
+      "defaultVisible": true,
+      "axisLocal": [
+        0,
+        0,
+        1
+      ],
+      "pressTravel": 0.004,
+      "turnRadians": [
+        -1.1,
+        1.1
+      ],
+      "worldPosition": [
+        1.2300000190734863,
+        1.1699999570846558,
+        -0.4180000126361847
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Monitor_device",
+      "localPosition": [
+        0.18000006675720215,
+        -0.15000009536743164,
+        0.11199995875358582
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Socket_US": {
+      "role": "connector socket",
+      "contactLocal": [
+        0,
+        0,
+        0
+      ],
+      "defaultVisible": true,
+      "normalLocal": [
+        0,
+        0,
+        1
+      ],
+      "compatiblePlug": "Cable_plug_US",
+      "worldPosition": [
+        0.8899999856948853,
+        1.0950000286102295,
+        -0.4090000092983246
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Monitor_device",
+      "localPosition": [
+        -0.15999996662139893,
+        -0.2250000238418579,
+        0.12099996209144592
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Socket_TOCO": {
+      "role": "connector socket",
+      "contactLocal": [
+        0,
+        0,
+        0
+      ],
+      "defaultVisible": true,
+      "normalLocal": [
+        0,
+        0,
+        1
+      ],
+      "compatiblePlug": "Cable_plug_TOCO",
+      "worldPosition": [
+        1.0499999523162842,
+        1.0950000286102295,
+        -0.4090000092983246
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Monitor_device",
+      "localPosition": [
+        0.0,
+        -0.2250000238418579,
+        0.12099996209144592
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Socket_power": {
+      "role": "connector socket",
+      "contactLocal": [
+        0,
+        0,
+        0
+      ],
+      "defaultVisible": true,
+      "normalLocal": [
+        0,
+        0,
+        1
+      ],
+      "compatiblePlug": "Cable_plug_power",
+      "worldPosition": [
+        1.2100000381469727,
+        1.0950000286102295,
+        -0.4090000092983246
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Monitor_device",
+      "localPosition": [
+        0.16000008583068848,
+        -0.2250000238418579,
+        0.12099996209144592
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Cable_plug_US": {
+      "role": "cable plug",
+      "contactLocal": [
+        0,
+        0,
+        -0.04
+      ],
+      "defaultVisible": true,
+      "insertionAxisLocal": [
+        0,
+        0,
+        -1
+      ],
+      "cableExitLocal": [
+        0,
+        0,
+        0.065
+      ],
+      "compatibleSocket": "Socket_US",
+      "worldPosition": [
+        0.949999988079071,
+        1.1319999694824219,
+        0.11500000208616257
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        0.949999988079071,
+        1.1319999694824219,
+        0.11500000208616257
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Cable_plug_TOCO": {
+      "role": "cable plug",
+      "contactLocal": [
+        0,
+        0,
+        -0.04
+      ],
+      "defaultVisible": true,
+      "insertionAxisLocal": [
+        0,
+        0,
+        -1
+      ],
+      "cableExitLocal": [
+        0,
+        0,
+        0.065
+      ],
+      "compatibleSocket": "Socket_TOCO",
+      "worldPosition": [
+        1.1299999952316284,
+        1.1319999694824219,
+        0.11500000208616257
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.1299999952316284,
+        1.1319999694824219,
+        0.11500000208616257
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Cable_plug_power": {
+      "role": "cable plug",
+      "contactLocal": [
+        0,
+        0,
+        -0.04
+      ],
+      "defaultVisible": true,
+      "insertionAxisLocal": [
+        0,
+        0,
+        -1
+      ],
+      "cableExitLocal": [
+        0,
+        0,
+        0.065
+      ],
+      "compatibleSocket": "Socket_power",
+      "worldPosition": [
+        1.2899999618530273,
+        1.1319999694824219,
+        0.20000000298023224
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.2899999618530273,
+        1.1319999694824219,
+        0.20000000298023224
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Buckle_FHR": {
+      "role": "belt buckle",
+      "contactLocal": [
+        0,
+        -0.009,
+        0
+      ],
+      "defaultVisible": false,
+      "axisLocal": [
+        0,
+        1,
+        0
+      ],
+      "abdomenUV": [
+        0.75,
+        0.28
+      ],
+      "surfaceOffset": 0.013,
+      "worldPosition": [
+        0.19437840580940247,
+        1.0217101573944092,
+        0.07941780984401703
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        0.9999999403953552
+      ],
+      "worldQuaternion_xyzw": [
+        0.12376978248357773,
+        -4.254382179880167e-09,
+        -0.46684321761131287,
+        0.8756360411643982
+      ],
+      "parent": null,
+      "localPosition": [
+        0.19437840580940247,
+        1.0217101573944092,
+        0.07941780984401703
+      ],
+      "localQuaternion_xyzw": [
+        0.12376978248357773,
+        -4.254382179880167e-09,
+        -0.46684321761131287,
+        0.8756360411643982
+      ]
+    },
+    "Buckle_TOCO": {
+      "role": "belt buckle",
+      "contactLocal": [
+        0,
+        -0.009,
+        0
+      ],
+      "defaultVisible": false,
+      "axisLocal": [
+        0,
+        1,
+        0
+      ],
+      "abdomenUV": [
+        0.6,
+        -0.64
+      ],
+      "surfaceOffset": 0.013,
+      "worldPosition": [
+        0.1561909317970276,
+        0.985004723072052,
+        -0.24776200950145721
+      ],
+      "worldScale": [
+        1.0,
+        1.0000001192092896,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        -0.3131971061229706,
+        0.0,
+        -0.4134683907032013,
+        0.8549569845199585
+      ],
+      "parent": null,
+      "localPosition": [
+        0.1561909317970276,
+        0.985004723072052,
+        -0.24776200950145721
+      ],
+      "localQuaternion_xyzw": [
+        -0.3131971061229706,
+        0.0,
+        -0.4134683907032013,
+        0.8549569845199585
+      ]
+    },
+    "Recovery_bin": {
+      "role": "used tissue recovery box",
+      "contactLocal": [
+        0,
+        0,
+        0
+      ],
+      "defaultVisible": true,
+      "openingNormal": [
+        0,
+        1,
+        0
+      ],
+      "dropRadius": 0.1,
+      "worldPosition": [
+        1.4299999475479126,
+        0.9850000143051147,
+        0.36000001430511475
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.4299999475479126,
+        0.9850000143051147,
+        0.36000001430511475
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Curtain_dynamic": {
+      "role": "privacy curtain",
+      "contactLocal": [
+        0,
+        1.25,
+        1.225
+      ],
+      "defaultVisible": true,
+      "worldPosition": [
+        -1.649999976158142,
+        0.0,
+        -1.2000000476837158
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        0.14000000059604645
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        -1.649999976158142,
+        0.0,
+        -1.2000000476837158
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Curtain_front_dynamic": {
+      "role": "privacy curtain",
+      "contactLocal": [
+        1.7,
+        1.25,
+        0
+      ],
+      "defaultVisible": true,
+      "worldPosition": [
+        -1.649999976158142,
+        0.0,
+        1.25
+      ],
+      "worldScale": [
+        0.14000000059604645,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        -1.649999976158142,
+        0.0,
+        1.25
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Curtain_right_dynamic": {
+      "role": "privacy curtain",
+      "contactLocal": [
+        0,
+        1.25,
+        1.225
+      ],
+      "defaultVisible": true,
+      "worldPosition": [
+        1.75,
+        0.0,
+        -1.2000000476837158
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        0.14000000059604645
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": null,
+      "localPosition": [
+        1.75,
+        0.0,
+        -1.2000000476837158
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "Monitor_screen": {
+      "worldPosition": [
+        1.0499999523162842,
+        1.375,
+        -0.45500001311302185
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "parent": "Monitor_device",
+      "localPosition": [
+        0.0,
+        0.0549999475479126,
+        0.07499995827674866
+      ],
+      "localQuaternion_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "frontNormal": [
+        0,
+        0,
+        1
+      ],
+      "UV": "full quad, CanvasTexture.flipY=false"
+    }
+  },
+  "socketPairs": {
+    "US": {
+      "socket": "Socket_US",
+      "plug": "Cable_plug_US",
+      "socketWorld": [
+        0.8899999856948853,
+        1.0950000286102295,
+        -0.4090000092983246
+      ],
+      "socketNormalWorld": [
+        0,
+        0,
+        1
+      ],
+      "plugTipLocal": [
+        0,
+        0,
+        -0.04
+      ],
+      "snapRootWorld": [
+        0.8899999856948853,
+        1.0950000286102295,
+        -0.36900001764297485
+      ],
+      "snapQuaternionWorld": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "snapTolerance": 0.055
+    },
+    "TOCO": {
+      "socket": "Socket_TOCO",
+      "plug": "Cable_plug_TOCO",
+      "socketWorld": [
+        1.0499999523162842,
+        1.0950000286102295,
+        -0.4090000092983246
+      ],
+      "socketNormalWorld": [
+        0,
+        0,
+        1
+      ],
+      "plugTipLocal": [
+        0,
+        0,
+        -0.04
+      ],
+      "snapRootWorld": [
+        1.0499999523162842,
+        1.0950000286102295,
+        -0.36900001764297485
+      ],
+      "snapQuaternionWorld": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "snapTolerance": 0.055
+    },
+    "power": {
+      "socket": "Socket_power",
+      "plug": "Cable_plug_power",
+      "socketWorld": [
+        1.2100000381469727,
+        1.0950000286102295,
+        -0.4090000092983246
+      ],
+      "socketNormalWorld": [
+        0,
+        0,
+        1
+      ],
+      "plugTipLocal": [
+        0,
+        0,
+        -0.04
+      ],
+      "snapRootWorld": [
+        1.2100000381469727,
+        1.0950000286102295,
+        -0.36900001764297485
+      ],
+      "snapQuaternionWorld": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "snapTolerance": 0.055
+    }
+  },
+  "curtains": {
+    "Curtain_dynamic": {
+      "worldOrigin": [
+        -1.65,
+        0,
+        -1.2
+      ],
+      "openScale": [
+        1,
+        1,
+        0.14
+      ],
+      "closedScale": [
+        1,
+        1,
+        1
+      ],
+      "scaleAxisWeb": "Z",
+      "topY": 2.65,
+      "bottomY": 0.18,
+      "trackSpan": 2.45,
+      "rootNote": "Fixed origin; lerp root.scale from openScale to closedScale. Source GLB starts open. Sway morph may use 0..1 subtle ambient motion."
+    },
+    "Curtain_front_dynamic": {
+      "worldOrigin": [
+        -1.65,
+        0,
+        1.25
+      ],
+      "openScale": [
+        0.14,
+        1,
+        1
+      ],
+      "closedScale": [
+        1,
+        1,
+        1
+      ],
+      "scaleAxisWeb": "X",
+      "topY": 2.65,
+      "bottomY": 0.18,
+      "trackSpan": 3.4,
+      "rootNote": "Fixed origin; lerp root.scale from openScale to closedScale. Source GLB starts open. Sway morph may use 0..1 subtle ambient motion."
+    },
+    "Curtain_right_dynamic": {
+      "worldOrigin": [
+        1.75,
+        0,
+        -1.2
+      ],
+      "openScale": [
+        1,
+        1,
+        0.14
+      ],
+      "closedScale": [
+        1,
+        1,
+        1
+      ],
+      "scaleAxisWeb": "Z",
+      "topY": 2.65,
+      "bottomY": 0.18,
+      "trackSpan": 2.45,
+      "rootNote": "Fixed origin; lerp root.scale from openScale to closedScale. Source GLB starts open. Sway morph may use 0..1 subtle ambient motion."
+    }
+  },
+  "privacyCamera": {
+    "insidePosition": [
+      1.58,
+      1.85,
+      0.95
+    ],
+    "insideTarget": [
+      0.4,
+      1,
+      -0.02
+    ],
+    "note": "Closed opaque U curtain blocks external cameras; transition the teaching camera inside its bounds after closure."
+  },
+  "equipmentRuntime": "Use getWorldPosition/getWorldQuaternion after updateMatrixWorld(true); controls/sockets are children of Monitor_device. Root-local contact points convert with localToWorld. For desired world root positions under a parent use parent.worldToLocal. Gel_cap rotates local X from its baseline; Sanitizer_pump moves local -Y up to .014m. Cable plug tips are local (0,0,-.040); both probe cable exits and plug cable exits are exported as child empties.",
+  "resourceReview": [
+    {
+      "url": "https://github.com/WeirongChen/ALPHUS",
+      "finding": "GPL-3.0 laboratory ultrasound probe stabilizer for tongue imaging; geometry/code not reused."
+    },
+    {
+      "url": "https://github.com/MedicalUltrasound/Image3dAPI",
+      "finding": "Interface for loading 3D ultrasound data; not a suitable teaching equipment model; not reused."
+    }
+  ],
   "defaultVisibility": {
     "Examiner_s1_L": false,
     "Examiner_s1_R": false,
@@ -596,17 +2001,39 @@
     "Examiner_s3_R": false,
     "Examiner_s4_L": false,
     "Examiner_s4_R": false,
+    "Tray_anchor": true,
+    "Gel_bottle": true,
+    "Gel_cap": true,
+    "Hand_sanitizer": true,
+    "Sanitizer_pump": true,
+    "FHR_transducer": true,
+    "TOCO_transducer": true,
+    "Clean_tissue": true,
+    "Monitor_recording_paper": true,
+    "Tray_return": true,
+    "Monitor_device": true,
+    "Control_power": true,
+    "Control_zero": true,
+    "Control_record": true,
+    "Control_volume": true,
+    "Socket_US": true,
+    "Socket_TOCO": true,
+    "Socket_power": true,
+    "Cable_plug_US": true,
+    "Cable_plug_TOCO": true,
+    "Cable_plug_power": true,
+    "Buckle_FHR": false,
+    "Buckle_TOCO": false,
+    "Recovery_bin": true,
+    "Curtain_dynamic": true,
+    "Curtain_front_dynamic": true,
+    "Curtain_right_dynamic": true,
     "Privacy_cover": true,
     "Chest_cover": true,
     "Pelvis_cover": true,
     "Palpation_abdomen": true,
     "Belt_FHR": false,
-    "Belt_TOCO": false,
-    "FHR_transducer": false,
-    "TOCO_transducer": false,
-    "Gel_bottle": true,
-    "Clean_tissue": true,
-    "Monitor_recording_paper": true
+    "Belt_TOCO": false
   },
   "visibilityNote": "All nodes are exported. Three.js must apply defaultVisibility before first rendering. GLB extras.defaultVisible is an app hint, not native visibility enforcement.",
   "patientArms": {
@@ -671,9 +2098,9 @@
         0.07660000026226044
       ],
       "nodePosition": [
-        0.1371999979019165,
-        1.0879231691360474,
-        0.07660000026226044
+        1.2,
+        1.125,
+        0.01
       ],
       "normal": [
         0.6429397463798523,
@@ -681,7 +2108,29 @@
         0.22829017043113708
       ],
       "axis": "+Y",
-      "root": "body center; lowest point local Y=-.015m; runtime position surface+(0,.019,0)"
+      "root": "Body center; geometry +Y up; local contact Y=-.015m. Working placement=surface+normal*.019, rotate +Y to normal.",
+      "trayPosition": [
+        1.2,
+        1.125,
+        0.01
+      ],
+      "initialState": "tray",
+      "initialNormal": [
+        0,
+        1,
+        0
+      ],
+      "surfaceOffset": 0.019,
+      "contactLocal": [
+        0,
+        -0.015,
+        0
+      ],
+      "cableExitLocal": [
+        0.062,
+        0.003,
+        0
+      ]
     },
     "TOCO_transducer": {
       "uv": [
@@ -694,9 +2143,9 @@
         -0.24079999327659607
       ],
       "nodePosition": [
-        0.0,
-        1.08451247215271,
-        -0.24079999327659607
+        0.99,
+        1.125,
+        0.01
       ],
       "normal": [
         -0.0,
@@ -704,7 +2153,29 @@
         -0.5865874886512756
       ],
       "axis": "+Y",
-      "root": "body center; lowest point local Y=-.015m; runtime position surface+(0,.019,0)"
+      "root": "Body center; geometry +Y up; local contact Y=-.015m. Working placement=surface+normal*.019, rotate +Y to normal.",
+      "trayPosition": [
+        0.99,
+        1.125,
+        0.01
+      ],
+      "initialState": "tray",
+      "initialNormal": [
+        0,
+        1,
+        0
+      ],
+      "surfaceOffset": 0.019,
+      "contactLocal": [
+        0,
+        -0.015,
+        0
+      ],
+      "cableExitLocal": [
+        0.062,
+        0.003,
+        0
+      ]
     }
   },
   "beltNodes": [
@@ -743,18 +2214,38 @@
       0,
       1,
       -0.02
+    ],
+    "equipmentWidePosition": [
+      2.35,
+      2.15,
+      2.35
+    ],
+    "equipmentWideTarget": [
+      0.48,
+      1.03,
+      -0.02
+    ],
+    "equipmentClosePosition": [
+      1.9,
+      1.9,
+      1.1
+    ],
+    "equipmentCloseTarget": [
+      1.03,
+      1.2,
+      0.08
     ]
   },
   "outputs": {
     "glb": "public/models/palpation-room.glb",
-    "glb_bytes": 3055724,
-    "glb_sha256": "d4e33800224643f4c083e5b929320274cd8b5529e75d8ed012781028edf09959",
+    "glb_bytes": 3378036,
+    "glb_sha256": "7d999dbef22a1ecd3647b23a44e2d1b2a0a3a20ed099949ce4d4aeaf5130a55a",
     "blend": "assets-source/palpation-room.blend",
-    "blend_sha256": "35de41912d75cae58a6287e5a05d0fd95b3f2d3ae7d061b4ca2be064f7a7d210",
+    "blend_sha256": "ee055818cae77a5c1087ee628bea0c40aa5e4c1f4ea2a4deaa2bdcc0c4ee9f02",
     "builder": "scripts/build_palpation_room.py",
-    "script_sha256": "6a8936f49a3a6c90e51d8ad6283e3eb03c35812206f271fcfc130e965371f377",
-    "nodes": 73,
-    "triangles": 120852
+    "script_sha256": "6c77c229185405c900c542b5788f9f23a80282f6c0c5395acc25c9d0238b3612",
+    "nodes": 152,
+    "triangles": 140262
   },
   "review": {
     "full": "/private/tmp/palpation-room-review.png",
@@ -765,6 +2256,8 @@
       "/private/tmp/palpation-hands-s4.png"
     ],
     "monitor_with_both_belts": "/private/tmp/palpation-monitor-review.png",
+    "equipment_wide": "/private/tmp/palpation-equipment-wide.png",
+    "equipment_close": "/private/tmp/palpation-equipment-close.png",
     "node_check": "passed",
     "medical_scope": "Schematic educational geometry and hand animations, pending user content review; no patient-specific diagnosis or force simulation."
   }

@@ -16,6 +16,15 @@ tree=ast.parse((ROOT/'scripts/build_fhr_room.py').read_text())
 helper_names={'W','mat','finish','cube','sphere','cylinder','path','mesh','empty','objread','target'}
 helpers=ast.Module(body=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in helper_names],type_ignores=[])
 exec(compile(helpers,'<shared local construction helpers>','exec'),globals())
+# Assign the mode before the quaternion: Blender otherwise converts the old
+# Euler rotation when switching modes and resets the requested cylinder axis.
+_shared_cylinder=cylinder
+def cylinder(name,p,r,depth,m,axis=(0,1,0)):
+    o=_shared_cylinder(name,p,r,depth,m,axis)
+    o.rotation_mode='QUATERNION'
+    o.rotation_quaternion=Vector((0,0,1)).rotation_difference(W(axis))
+    bpy.context.view_layer.update()
+    return o
 ivory=bpy.data.materials['Warm hospital enamel'];white=bpy.data.materials['Clean warm cotton']
 frame=bpy.data.materials['Bed frame satin aluminum'];dark=bpy.data.materials['Caster rubber and accents']
 blue=bpy.data.materials['Clinical blue accent'];gownmat=bpy.data.materials['Patterned maternity gown']
@@ -205,8 +214,9 @@ pv=[];pf=[];NU=36;NV=40
 for j in range(NV+1):
     z=-.37+j/NV*.73
     for i in range(NU+1):
-        x=-.31+i/NU*.62;q=1-(x/RX)**2-((z-CZ)/RZ)**2
-        y=abdomen_y(x,z)+.010 if q>0 else .85-.17*max(0,(abs(x)-RX)/.065)
+        x=-.31+i/NU*.62;q=1-(x/(RX+.012))**2-((z-CZ)/(RZ+.012))**2
+        # A loose cloth envelope clears the steep skin boundary between samples.
+        y=CY+(RY+.014)*math.sqrt(q) if q>0 else .85-.17*max(0,(abs(x)-RX)/.065)
         y+=.004*math.sin(39*x+13*z)
         pv.append((x,y,z))
 for j in range(NV):
@@ -235,19 +245,167 @@ for name,z in [('Belt_FHR',CZ+.28*RZ),('Belt_TOCO',CZ-.64*RZ)]:
 probe_api={}
 for name,u,v,ma in [('FHR_transducer',.56,.28,blue),('TOCO_transducer',0,-.64,ivory)]:
     surface=UV(u,v);normal=abdomen_normal(surface.x,surface.z);center=surface+Vector((0,.019,0))
-    o=cylinder(name,center,.043,.030,ma);o['defaultVisible']=False
+    o=cylinder(name,center,.043,.030,ma);o['defaultVisible']=True
     cap=cylinder(name+'_face',center+Vector((0,.019,0)),.035,.010,ivory)
     bpy.context.view_layer.update();cap.parent=o;cap.matrix_parent_inverse=o.matrix_world.inverted()
     probe_api[name]={'uv':[u,v],'surface':list(surface),'nodePosition':list(center),'normal':list(normal),'axis':'+Y','root':'body center; lowest point local Y=-.015m; runtime position surface+(0,.019,0)'}
 
-# Original non-branded bedside preparation props. Each whole prop is a parented
-# node so runtime may pick, hide, or move it without severing caps or labels.
-gel=empty('Gel_bottle',(1.10,1.12,-.31))
-for o in [cylinder('Gel_bottle_body',(1.10,1.16,-.31),.030,.13,gelmat),cylinder('Gel_bottle_neck',(1.10,1.24,-.31),.012,.035,ivory),cube('Gel_bottle_label',(1.10,1.17,-.276),(.040,.055,.003),white,.003)]:
-    bpy.context.view_layer.update();o.parent=gel;o.matrix_parent_inverse=gel.matrix_world.inverted()
-paper=cube('Monitor_recording_paper',(.97,1.088,-.28),(.19,.004,.14),white,.002)
-tissue=mesh('Clean_tissue',[(.93,1.11,-.38),(1.02,1.12,-.37),(1.035,1.116,-.28),(.945,1.109,-.29)],[(0,1,2,3)],white)
-tissue['defaultVisible']=True
+# 1.1.0 original bedside equipment. No downloaded CAD/code/images are reused.
+# The monitor remains on the same cart. An extended preparation tray is in front
+# of it, so one bedside-wide camera can see screen, controls, sockets and supplies.
+interaction_roots={};equipment_api={};socket_api={}
+def parent_preserve(child,parent):
+    bpy.context.view_layer.update();matrix=child.matrix_world.copy();child.parent=parent;child.matrix_world=matrix
+    bpy.context.view_layer.update()
+def bake_rotation(o):
+    bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o
+    bpy.ops.object.transform_apply(location=False,rotation=True,scale=False)
+    return o
+def localmesh(name,vertices,faces,position,material):
+    o=mesh(name,vertices,faces,material);o.location=W(position);return o
+def register(o,role,contact=(0,0,0),visible=True,**extra):
+    o['interactionRoot']=o.name;o['role']=role;o['contactLocal']=list(contact);o['defaultVisible']=visible
+    interaction_roots[o.name]=o
+    equipment_api[o.name]={'role':role,'contactLocal':list(contact),'defaultVisible':visible,**extra}
+    return o
+tray_center=(1.03,1.075,.18);tray_top=1.10
+cube('Preparation_tray_surface',tray_center,(.66,.05,.64),ivory,.022)
+for x in [.715,1.345]:cube('Preparation_tray_raised_side',(x,1.12,.18),(.012,.040,.63),frame,.006)
+cube('Preparation_tray_back_lip',(1.03,1.12,-.13),(.63,.04,.012),frame,.005)
+cube('Preparation_cart_extension',(1.05,.18,-.12),(.56,.065,1.08),ivory,.035)
+cylinder('Preparation_tray_support',(1.05,.635,.22),.023,.855,frame)
+for x in [.84,1.26]:cylinder('Preparation_front_caster',(x,.105,.34),.048,.035,dark,(1,0,0))
+tray_anchor=register(empty('Tray_anchor',(1.03,tray_top,.18)),'tray',(0,0,0),True,size=[.66,.64],surfaceNormal=[0,1,0])
+
+# A bottle-bottom root and a genuine hinged flip cap. All parts follow the bottle.
+gel=register(empty('Gel_bottle',(.80,1.105,.10)),'gel bottle',(0,.067,0),True,restOrientation=[0,0,0,1],dispenseAxisLocal=[0,1,0])
+for name,dy,radius,depth,material in [('Gel_bottle_body',.0675,.030,.135,gelmat),('Gel_bottle_neck',.143,.012,.032,ivory)]:
+    part=cylinder(name,(.80,1.105+dy,.10),radius,depth,material);parent_preserve(part,gel)
+label=cube('Gel_bottle_label',(.80,1.173,.131),(.042,.054,.002),white,.003);parent_preserve(label,gel)
+cap=register(empty('Gel_cap',(.80,1.269,.085)),'gel cap hinge',(0,.004,.015),True,hingeAxisLocal=[1,0,0],closedRadians=0,openRadians=-1.919862,rootNote='Child of Gel_bottle, origin at back edge of cap; rotate local X from baseline.')
+parent_preserve(cap,gel)
+for part in [cylinder('Gel_cap_lid',(.80,1.273,.10),.019,.012,ivory),cube('Gel_cap_hinge',(.80,1.270,.083),(.021,.009,.008),ivory,.002)]:parent_preserve(part,cap)
+
+# Unbranded hand sanitizer, with a separate pump head/nozzle and real press travel.
+sanitizer=register(empty('Hand_sanitizer',(.80,1.105,.36)),'hand sanitizer',(0,.072,0),True)
+for part in [cube('Sanitizer_bottle',(.80,1.175,.36),(.067,.140,.057),mat('Sanitizer pale mint',(.42,.66,.61),.34),.012),cylinder('Sanitizer_neck',(.80,1.253,.36),.014,.025,ivory),cube('Sanitizer_label',(.80,1.179,.390),(.049,.065,.002),white,.003)]:parent_preserve(part,sanitizer)
+pump=register(empty('Sanitizer_pump',(.80,1.275,.36)),'sanitizer pump',(0,.010,.015),True,pressAxisLocal=[0,-1,0],pressTravel=.014)
+parent_preserve(pump,sanitizer)
+for part in [cube('Sanitizer_pump_head',(.80,1.284,.374),(.049,.018,.060),ivory,.005),cube('Sanitizer_nozzle',(.80,1.277,.405),(.015,.012,.023),ivory,.003)]:parent_preserve(part,pump)
+# A small graphic cross is authored geometry, not a medical product logo.
+for size in [(.029,.006,.003),(.006,.029,.003)]:
+    cross=cube('Sanitizer_generic_mark',(.80,1.179,.392),size,blue,.001);parent_preserve(cross,sanitizer)
+
+# The existing probes are stored flat on the tray. Their working abdomen UV
+# targets and +Y contact axis remain unchanged, so the runtime can lift/place them.
+probe_tray={'FHR_transducer':(1.20,1.125,.01),'TOCO_transducer':(.99,1.125,.01)}
+for name,position in probe_tray.items():
+    probe=bpy.data.objects[name];probe.location=W(position);probe['defaultVisible']=True
+    register(probe,'ultrasound transducer' if name.startswith('FHR') else 'TOCO transducer',(0,-.015,0),True,axisLocal=[0,1,0],surfaceOffset=.019,abdomenUV=probe_api[name]['uv'],cableExitLocal=[.062,.003,0])
+    exitpart=bake_rotation(cylinder(name+'_strain_relief',Vector(position)+Vector((.046,.003,0)),.007,.026,dark,(1,0,0)));parent_preserve(exitpart,probe)
+    anchor=empty(name+'_cable_anchor',Vector(position)+Vector((.062,.003,0)));parent_preserve(anchor,probe)
+    probe_api[name].update({'nodePosition':list(position),'trayPosition':list(position),'initialState':'tray','initialNormal':[0,1,0],'surfaceOffset':.019,'contactLocal':[0,-.015,0],'cableExitLocal':[.062,.003,0],'root':'Body center; geometry +Y up; local contact Y=-.015m. Working placement=surface+normal*.019, rotate +Y to normal.'})
+
+# Folded tissue has a small volume and a central pickable face. Recording paper
+# is independent, with a return outline drawn as original three-dimensional rails.
+tissue_vertices=[(-.055,0,-.043),(.053,.002,-.042),(.057,.002,.043),(-.052,0,.040),(-.050,.008,-.041),(.048,.011,-.039),(.052,.009,.041),(-.047,.006,.038)]
+tissue_faces=[(0,1,2,3),(4,7,6,5),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)]
+tissue=register(localmesh('Clean_tissue',tissue_vertices,tissue_faces,(1.10,1.112,.23),white),'clean tissue',(0,.009,0),True)
+paper=register(cube('Monitor_recording_paper',(1.10,1.112,.40),(.21,.004,.14),white,.002),'recording paper',(0,.002,0),True)
+return_target=register(empty('Tray_return',(1.10,1.106,.40)),'paper return target',(0,0,0),True,dropRadius=.12)
+for x,z,sx,sz in [(1.10,.314,.235,.005),(1.10,.486,.235,.005),(.9825,.40,.005,.172),(1.2175,.40,.005,.172)]:
+    rail=cube('Tray_return_edge',(x,1.105,z),(sx,.003,sz),blue,.001);parent_preserve(rail,return_target)
+
+# Integrated equipment face. Controls and sockets all face +Z; their root
+# quaternions are identity, which makes press/turn motions predictable in JS.
+for o in list(bpy.context.scene.objects):
+    if o.name.startswith('Monitor_button') or o.name in ['Monitor_blank_paper','Monitor_print_tray']:delete(o)
+device=register(empty('Monitor_device',(1.05,1.32,-.53)),'monitor device',(0,0,.075),True,frontNormal=[0,0,1])
+parent_preserve(bpy.data.objects['Monitor_housing'],device)
+screen=bpy.data.objects['Monitor_screen'];screen.location=W((1.05,1.375,-.455));parent_preserve(screen,device)
+panel=cube('Monitor_connection_panel',(1.05,1.115,-.452),(.54,.135,.050),ivory,.014);parent_preserve(panel,device)
+control_y=1.170;control_z=-.418
+for name,x,material in [('Control_power',.87,blue),('Control_zero',.99,ivory),('Control_record',1.11,mat('Record control amber',(.72,.35,.07),.48)),('Control_volume',1.23,dark)]:
+    depth=.016 if name=='Control_volume' else .010
+    control=register(bake_rotation(cylinder(name,(x,control_y,control_z),.023,depth,material,(0,0,1))),'volume dial' if name=='Control_volume' else 'monitor button',(0,0,depth/2),True,axisLocal=[0,0,1],pressTravel=.004,turnRadians=[-1.1,1.1] if name=='Control_volume' else None)
+    parent_preserve(control,device)
+    # Raised tactile marker makes each button visible from an oblique view.
+    mark=cube(name+'_indicator',(x,control_y+.008,control_z+depth/2+.0015),(.005,.010,.003),white if name!='Control_zero' else blue,.001);parent_preserve(mark,control)
+
+# Recessed ports: annular mesh and dark inner cup, with a pair-specific accent.
+for kind,x,accent in [('US',.89,blue),('TOCO',1.05,mat('TOCO socket amber',(.55,.31,.08),.55)),('power',1.21,dark)]:
+    position=Vector((x,1.095,-.409));rv=[];rf=[];NN=32
+    for z,r in [(-.006,.031),(.004,.031),(.004,.017),(-.006,.017)]:
+        for j in range(NN):a=j/NN*2*math.pi;rv.append((r*math.cos(a),r*math.sin(a),z))
+    for ring in range(3):
+        for j in range(NN):a=ring*NN+j;b=ring*NN+(j+1)%NN;rf.append((a,b,b+NN,a+NN))
+    socket=register(localmesh('Socket_'+kind,rv,rf,position,accent),'connector socket',(0,0,0),True,normalLocal=[0,0,1],compatiblePlug='Cable_plug_'+kind)
+    parent_preserve(socket,device)
+    mount=bake_rotation(cylinder('Socket_'+kind+'_mount',position+Vector((0,0,-.0125)),.030,.015,dark,(0,0,1)));parent_preserve(mount,socket)
+    recess=bake_rotation(cylinder('Socket_'+kind+'_recess',position+Vector((0,0,-.005)),.016,.005,dark,(0,0,1)));parent_preserve(recess,socket)
+    socket_api[kind]={'socket':'Socket_'+kind,'plug':'Cable_plug_'+kind,'socketWorld':list(position),'socketNormalWorld':[0,0,1],'plugTipLocal':[0,0,-.040],'snapRootWorld':list(position+Vector((0,0,.040))),'snapQuaternionWorld':[0,0,0,1],'snapTolerance':.055}
+
+# Independent cable plugs have a keyed nose and a short strain-relief tail.
+# The runtime supplies the flexible lead from each exported cable anchor.
+plug_positions={'US':(.95,1.132,.115),'TOCO':(1.13,1.132,.115),'power':(1.29,1.132,.20)}
+for kind,position in plug_positions.items():
+    position=Vector(position);accent=blue if kind=='US' else bpy.data.materials['TOCO socket amber'] if kind=='TOCO' else dark
+    plug=register(cube('Cable_plug_'+kind,position,(.035,.034,.055),accent,.006),'cable plug',(0,0,-.040),True,insertionAxisLocal=[0,0,-1],cableExitLocal=[0,0,.065],compatibleSocket='Socket_'+kind)
+    nose=bake_rotation(cylinder('Cable_plug_'+kind+'_nose',position+Vector((0,0,-.0335)),.012,.013,frame,(0,0,1)));parent_preserve(nose,plug)
+    tail=bake_rotation(cylinder('Cable_plug_'+kind+'_strain_relief',position+Vector((0,0,.045)),.008,.035,dark,(0,0,1)));parent_preserve(tail,plug)
+    for z in [.032,.041,.050]:
+        ring=bake_rotation(cylinder('Cable_plug_'+kind+'_rib',position+Vector((0,0,z)),.010,.003,dark,(0,0,1)));parent_preserve(ring,plug)
+    anchor=empty('Cable_plug_'+kind+'_cable_anchor',position+Vector((0,0,.065)));parent_preserve(anchor,plug)
+
+# Two buckle roots retain the abdominal normal/position relationship, independent
+# of the full belt mesh (the runtime may replace the strap geometry).
+for name,u,v in [('Buckle_FHR',.75,.28),('Buckle_TOCO',.60,-.64)]:
+    point=UV(u,v);normal=abdomen_normal(point.x,point.z);position=point+normal*.013
+    buckle=register(cube(name,position,(.050,.018,.037),ivory,.004),'belt buckle',(0,-.009,0),False,axisLocal=[0,1,0],abdomenUV=[u,v],surfaceOffset=.013)
+    slot=cube(name+'_slot',position+Vector((0,.010,0)),(.034,.003,.012),dark,.002);parent_preserve(slot,buckle)
+    buckle.rotation_mode='QUATERNION';buckle.rotation_quaternion=W((0,1,0)).rotation_difference(W(normal))
+
+# A compact open recovery box hangs beside the cart; its opening is the drop root.
+binroot=register(empty('Recovery_bin',(1.43,.985,.36)),'used tissue recovery box',(0,0,0),True,openingNormal=[0,1,0],dropRadius=.10)
+for offset,size,material in [((0,-.245/2,0),(.205,.010,.24),dark),((-.108,-.115,0),(.012,.23,.25),ivory),((.108,-.115,0),(.012,.23,.25),ivory),((0,-.115,-.123),(.21,.23,.012),ivory),((0,-.115,.123),(.21,.23,.012),ivory)]:
+    part=cube('Recovery_bin_wall',Vector((1.43,.985,.36))+Vector(offset),size,material,.006);parent_preserve(part,binroot)
+for x,z,sx,sz in [(1.43,.232,.23,.018),(1.43,.488,.23,.018),(1.313,.36,.018,.25),(1.547,.36,.018,.25)]:
+    rim=cube('Recovery_bin_soft_rim',(x,.986,z),(sx,.018,sz),blue,.007);parent_preserve(rim,binroot)
+
+# A real U-shaped privacy curtain track encloses both bed and monitoring cart.
+# Open panels are gathered at fixed track ends; do not translate them through
+# the room. The runtime interpolates only the indicated Web scale component.
+for o in list(bpy.context.scene.objects):
+    if o.name.startswith(('Curtain_dynamic','Curtain_ceiling_track','Curtain_suspension')):delete(o)
+curtain_api={}
+for name,origin,length,axis in [('Curtain_dynamic',(-1.65,0,-1.20),2.45,'Z'),('Curtain_front_dynamic',(-1.65,0,1.25),3.40,'X'),('Curtain_right_dynamic',(1.75,0,-1.20),2.45,'Z')]:
+    vertices=[];faces=[];NU=144;NV=8
+    for j in range(NV+1):
+        tY=j/NV;y=.18+tY*2.47
+        for i in range(NU+1):
+            t=i/NU;pleat=.026*math.sin(t*2*math.pi*18);hem=.008*math.cos(t*2*math.pi*18)*(1-tY)
+            vertices.append((pleat,y+hem,length*t) if axis=='Z' else (length*t,y+hem,pleat))
+    for j in range(NV):
+        for i in range(NU):a=j*(NU+1)+i;faces.append((a,a+1,a+NU+2,a+NU+1))
+    curtain=register(localmesh(name,vertices,faces,origin,bpy.data.materials['Curtain woven sage']),'privacy curtain',(0,1.25,length*.5) if axis=='Z' else (length*.5,1.25,0),True)
+    curtain.shape_key_add(name='Basis');sway=curtain.shape_key_add(name='Sway')
+    for v,k in zip(vertices,sway.data):
+        q=Vector(v);offset=.010*math.sin(q.y*1.8)*(1-(q.y-.18)/2.47)
+        q.x+=offset if axis=='Z' else 0;q.z+=offset if axis=='X' else 0;k.co=W(q)
+    if axis=='Z':curtain.scale.y=.14
+    else:curtain.scale.x=.14
+    open_scale=[1,1,.14] if axis=='Z' else [.14,1,1]
+    curtain['openScale']=open_scale;curtain['closedScale']=[1,1,1];curtain['slideScaleAxis']=axis
+    curtain_api[name]={'worldOrigin':list(origin),'openScale':open_scale,'closedScale':[1,1,1],'scaleAxisWeb':axis,'topY':2.65,'bottomY':.18,'trackSpan':length,'rootNote':'Fixed origin; lerp root.scale from openScale to closedScale. Source GLB starts open. Sway morph may use 0..1 subtle ambient motion.'}
+path('Privacy_curtain_U_track',[(-1.65,2.72,-1.25),(-1.65,2.72,1.12),(-1.55,2.72,1.25),(1.60,2.72,1.25),(1.75,2.72,1.12),(1.75,2.72,-1.25)],.018,frame)
+
+# Store explicit root-local and world-space API before export-only static batching.
+def serialize_interaction(o):
+    bpy.context.view_layer.update();webM=C.inverted().to_4x4()@o.matrix_world@C.to_4x4();localM=C.inverted().to_4x4()@o.matrix_local@C.to_4x4();q=webM.to_quaternion();lq=localM.to_quaternion()
+    return {'worldPosition':list(webM.translation),'worldScale':list(webM.to_scale()),'worldQuaternion_xyzw':[q.x,q.y,q.z,q.w],'parent':o.parent.name if o.parent else None,'localPosition':list(localM.translation),'localQuaternion_xyzw':[lq.x,lq.y,lq.z,lq.w]}
+for name,root in interaction_roots.items():equipment_api[name].update(serialize_interaction(root))
+equipment_api['Monitor_screen']={**serialize_interaction(screen),'frontNormal':[0,0,1],'UV':'full quad, CanvasTexture.flipY=false'}
+
 
 # Anatomical examiner hands. Read the official core fingers/palm/forearm, derive
 # a wrist-based local frame, then cup the actual mesh rather than substituting
@@ -348,7 +506,13 @@ bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'assets-source/palpation-room.blen
 # Batch only static furniture, preserving all interaction and pose roots. Export
 # every examiner hand, regardless of its intended runtime default visibility.
 keep={'Patient_head','Patient_body','Patient_left_hand','Patient_right_hand','Patient_eyes','Chest_cover','Pelvis_cover','Privacy_cover','Palpation_abdomen','Belt_FHR','Belt_TOCO','FHR_transducer','FHR_transducer_face','TOCO_transducer','TOCO_transducer_face','Monitor_screen','Curtain_dynamic','Monitor_recording_paper','Clean_tissue'}
-static=[o for o in scene.objects if o.type in {'MESH','CURVE'} and o.name not in keep and not o.name.startswith('Examiner_') and not (o.parent and o.parent.name=='Gel_bottle')]
+def protected_interaction(o):
+    parent=o
+    while parent is not None:
+        if parent.name in interaction_roots:return True
+        parent=parent.parent
+    return False
+static=[o for o in scene.objects if not protected_interaction(o) and o.type in {'MESH','CURVE'} and o.name not in keep and not o.name.startswith('Examiner_') and not (o.parent and o.parent.name=='Gel_bottle')]
 for o in static:
     bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o
     if o.type=='CURVE':bpy.ops.object.convert(target='MESH')
@@ -390,26 +554,30 @@ if '--no-render' not in sys.argv:
     scene.render.filepath='/private/tmp/palpation-monitor-review.png';bpy.ops.render.render(write_still=True)
 
 blob=(ROOT/'public/models/palpation-room.glb').read_bytes();n=struct.unpack_from('<I',blob,12)[0];gltf=json.loads(blob[20:20+n]);names={o['name'] for o in gltf['nodes']}
-required=['Palpation_abdomen','Privacy_cover','Chest_cover','Pelvis_cover','Belt_FHR','Belt_TOCO','FHR_transducer','TOCO_transducer','Gel_bottle','Clean_tissue','Monitor_recording_paper']+list(hand_api)+list(anchors)
+required=['Palpation_abdomen','Privacy_cover','Chest_cover','Pelvis_cover','Belt_FHR','Belt_TOCO','FHR_transducer','TOCO_transducer','Gel_bottle','Clean_tissue','Monitor_recording_paper']+list(hand_api)+list(anchors)+list(interaction_roots)
 assert all(name in names for name in required)
 triangles=sum(gltf['accessors'][p['indices']]['count']//3 for m in gltf['meshes'] for p in m['primitives'])
 provenance={
- 'asset':'palpation-room','version':'1.0.1','prepared_date':'2026-10-15','tool':'Blender '+bpy.app.version_string,
+ 'asset':'palpation-room','version':'1.1.0','prepared_date':'2026-10-15','tool':'Blender '+bpy.app.version_string,
  'purpose':'Synthetic four-step Leopold palpation teaching room. Patient and examiner are fictional adults. No patient photographs or records.',
  'source':{'shared_editable_room':'assets-source/fhr-room.blend','shared_room_sha256':hashlib.sha256((ROOT/'assets-source/fhr-room.blend').read_bytes()).hexdigest(),'shared_helpers':'scripts/build_fhr_room.py, pure construction functions only via AST; no top-level code executed','core_repository':'https://github.com/makehumancommunity/makehuman','core_commit':'a8bc2d54ff0ac92e78ff71431b1023eda42bf482','core_license':'CC0-1.0','license_file':'licenses/MakeHuman-core-CC0.md','official_asset_statement':'https://static.makehumancommunity.org/about/license.html','source_license_distinction':'Only explicitly CC0 basemesh, adult female targets, face units, eyes and skin weights are reused. MakeHuman AGPL executable/source code is not included or executed.','no_complete_hand_pose_asset_found':'The project resource review found no suitable complete authorized four-maneuver set; these poses are newly authored from the CC0 palm/finger/forearm topology.'},
- 'authored_changes':['Supine adult torso and pillow, lower backrest; opaque chest/pelvis coverings and separate privacy abdomen cover','Lift connected head and neck by .035m in illustrative scene; lower backrest by .05m, halve pillow thickness and reposition to prevent skull burial','Continuous analytic pregnant skin mesh with subtle navel and matched raycast/height formula','Paired knee contours under an opaque drape with Knees_flex morph','Eight distinct left/right examiner hand poses using genuine palm/finger/forearm topology and short scrub cuffs','Two independently controlled full belt loops and two repositionable transducers','Unbranded gel bottle, tissue and recording paper'],
+ 'authored_changes':['Supine adult torso and pillow, lower backrest; opaque chest/pelvis coverings and separate privacy abdomen cover','Lift connected head and neck by .035m in illustrative scene; lower backrest by .05m, halve pillow thickness and reposition to prevent skull burial','Continuous analytic pregnant skin mesh with subtle navel and matched raycast/height formula','Paired knee contours under an opaque drape with Knees_flex morph','Eight distinct left/right examiner hand poses using genuine palm/finger/forearm topology and short scrub cuffs','Two independently controlled full belt loops and two repositionable transducers','Unbranded extended preparation tray, hinged gel cap, pressable hand sanitizer, tissue and recording paper','Integrated monitor controls, recessed paired sockets, loose keyed cable plugs, independent belt buckles, paper return marker and open recovery box','U-shaped pleated privacy curtain with three real gather/extend panels and explicit open/closed transforms','Loose privacy cloth envelope clears steep abdominal skin edges while retaining its existing root and coverage'],
  'axes':{'units':'metres','up':'+Y','head':'-Z','feet':'+Z','maternal_left':'+X','maternal_right':'-X','examiner_hand_labels':'L/R always refer to the examiner\u2019s actual physical hand, never the maternal side. s1/s2 examiner faces head, s4 examiner faces feet.'},
  'abdomen':{'node':'Palpation_abdomen','xRadius':RX,'zRadius':RZ,'centerZ':CZ,'baseY':CY,'height':RY,'mapping':'x=.245*u; z=-.020+.345*v','domain':'u*u+v*v <= 1; interactive path should stay below 0.94 squared radius','heightFunction':'y=.835+.300*sqrt(max(0,1-(x/.245)^2-((z+.020)/.345)^2))-.009*exp(-(x/.022)^2-((z-.025)/.025)^2)','normal':'normalize([-dy/dx,1,-dy/dz]); central differences epsilon=.0001 m match the builder','hoverOffset':.025,'collision':'Use the exported mesh raycast or identical analytic surface. Contact-root placement = surfaceTarget - rotation*contactLocal + normal*hoverOffset; hoverOffset zero means tangent contact. The whole hand stays above its contact tangent plane.'},
  'anchors':{name:{'uv':list(uv),'web':list(UV(*uv))} for name,uv in anchors.items()},
  'hands':hand_api,
- 'defaultVisibility':{**{n:False for n in hand_api},'Privacy_cover':True,'Chest_cover':True,'Pelvis_cover':True,'Palpation_abdomen':True,'Belt_FHR':False,'Belt_TOCO':False,'FHR_transducer':False,'TOCO_transducer':False,'Gel_bottle':True,'Clean_tissue':True,'Monitor_recording_paper':True},
+ 'equipment':equipment_api,'socketPairs':socket_api,'curtains':curtain_api,
+ 'privacyCamera':{'insidePosition':[1.58,1.85,.95],'insideTarget':[.4,1,-.02],'note':'Closed opaque U curtain blocks external cameras; transition the teaching camera inside its bounds after closure.'},
+ 'equipmentRuntime':'Use getWorldPosition/getWorldQuaternion after updateMatrixWorld(true); controls/sockets are children of Monitor_device. Root-local contact points convert with localToWorld. For desired world root positions under a parent use parent.worldToLocal. Gel_cap rotates local X from its baseline; Sanitizer_pump moves local -Y up to .014m. Cable plug tips are local (0,0,-.040); both probe cable exits and plug cable exits are exported as child empties.',
+ 'resourceReview':[{'url':'https://github.com/WeirongChen/ALPHUS','finding':'GPL-3.0 laboratory ultrasound probe stabilizer for tongue imaging; geometry/code not reused.'},{'url':'https://github.com/MedicalUltrasound/Image3dAPI','finding':'Interface for loading 3D ultrasound data; not a suitable teaching equipment model; not reused.'}],
+ 'defaultVisibility':{**{n:False for n in hand_api},**{n:a['defaultVisible'] for n,a in equipment_api.items() if 'defaultVisible' in a},'Privacy_cover':True,'Chest_cover':True,'Pelvis_cover':True,'Palpation_abdomen':True,'Belt_FHR':False,'Belt_TOCO':False,'FHR_transducer':True,'TOCO_transducer':True,'Gel_bottle':True,'Clean_tissue':True,'Monitor_recording_paper':True},
  'visibilityNote':'All nodes are exported. Three.js must apply defaultVisibility before first rendering. GLB extras.defaultVisible is an app hint, not native visibility enforcement.',
  'patientArms':patient_arm_api,
  'patientMotion':{'nodes':['Patient_head','Patient_body','Patient_left_hand','Patient_right_hand','Chest_cover','Palpation_abdomen'],'keys':'Existing face Blink/Talk/Contraction/Breath retained; new chest/abdomen Breath; Pelvis_cover Knees_flex 0=flat, 1=paired bent-knee drape. Preserve each node\u2019s imported baseline quaternion, including supine -26 degree change.','kneeScope':'Knee flexion is represented by anatomically placed contours under an opaque drape, not exposed leg-joint kinematics.'},
  'probes':probe_api,'beltNodes':['Belt_FHR','Belt_TOCO'],'beltClearance':'Top belt surface offset .008m along analytic normal, above maximum .004m belly Breath deformation. Underside flattened under back.','monitor':'Monitor_screen is a complete single quad; CanvasTexture.flipY=false, same full UV as M2.',
- 'camera':{'position':[1.65,2.0,1.62],'target':[0,1,-.07],'closePosition':[.85,1.95,.82],'closeTarget':[0,1.03,-.03],'monitorPosition':[.22,1.95,.12],'monitorTarget':[0,1,-.02]},
+ 'camera':{'position':[1.65,2.0,1.62],'target':[0,1,-.07],'closePosition':[.85,1.95,.82],'closeTarget':[0,1.03,-.03],'monitorPosition':[.22,1.95,.12],'monitorTarget':[0,1,-.02],'equipmentWidePosition':[2.35,2.15,2.35],'equipmentWideTarget':[.48,1.03,-.02],'equipmentClosePosition':[1.90,1.90,1.10],'equipmentCloseTarget':[1.03,1.20,.08]},
  'outputs':{'glb':'public/models/palpation-room.glb','glb_bytes':len(blob),'glb_sha256':hashlib.sha256(blob).hexdigest(),'blend':'assets-source/palpation-room.blend','blend_sha256':hashlib.sha256((ROOT/'assets-source/palpation-room.blend').read_bytes()).hexdigest(),'builder':'scripts/build_palpation_room.py','script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'nodes':len(gltf['nodes']),'triangles':triangles},
- 'review':{'full':'/private/tmp/palpation-room-review.png','poses':['/private/tmp/palpation-hands-'+s+'.png' for s in pose_defs],'monitor_with_both_belts':'/private/tmp/palpation-monitor-review.png','node_check':'passed','medical_scope':'Schematic educational geometry and hand animations, pending user content review; no patient-specific diagnosis or force simulation.'}
+ 'review':{'full':'/private/tmp/palpation-room-review.png','poses':['/private/tmp/palpation-hands-'+s+'.png' for s in pose_defs],'monitor_with_both_belts':'/private/tmp/palpation-monitor-review.png','equipment_wide':'/private/tmp/palpation-equipment-wide.png','equipment_close':'/private/tmp/palpation-equipment-close.png','node_check':'passed','medical_scope':'Schematic educational geometry and hand animations, pending user content review; no patient-specific diagnosis or force simulation.'}
 }
 (ROOT/'docs/palpation-room-provenance.json').write_text(json.dumps(provenance,ensure_ascii=False,indent=2)+'\n')
 print('PALPATION_ASSET_COMPLETE',len(blob),'bytes',triangles,'triangles',len(gltf['nodes']),'nodes')
