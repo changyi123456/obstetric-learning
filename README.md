@@ -1,6 +1,6 @@
 # 產科學習室
 
-胎位辨識、分娩機轉與胎心率試教版。獨立於既有 `birth-sim-web`，提供胎位探索與自我測驗，以及分娩機轉的連續示範、七段操作及順序練習。包含回饋、重試、裝置內進度保存與摘要下載。胎心率提供同步雙軌、標記判讀與九段合成曲線；觸診與監測為後續製作。
+四模組產科教學試用版，獨立於既有 `birth-sim-web`。提供胎位探索與自我測驗、分娩機轉七段直接操作、胎心率曲線與動態床邊情境，以及四段觸診與通用胎心監視器操作。各模組分別保存本機進度、回饋及摘要。
 
 ## 開發與驗證
 
@@ -11,7 +11,7 @@ npm test
 npm run build
 ```
 
-本機使用 `http://127.0.0.1:5178/`。獨立入口為 `?module=fetal-position` 、`?module=birth-mechanism` 與 `?module=fetal-heart-rate`；模組總覽為 `?module=all`。進度只存在當前瀏覽器、當前網站來源的 localStorage，不收集姓名或學號。
+本機使用 `http://127.0.0.1:5178/`。獨立入口為 `?module=fetal-position`、`?module=birth-mechanism`、`?module=fetal-heart-rate` 與 `?module=palpation`；模組總覽為 `?module=all`。進度只存在當前瀏覽器、當前網站來源的 localStorage，不收集真實姓名或學號；M1 核對手環使用虛構資料。
 
 ## 模型來源與選用理由
 
@@ -101,3 +101,11 @@ Pointer Events 支援滑鼠及觸控，抓取採指標捕捉，取消、失焦�
 先查 GitHub，採 MakeHuman 官方 CC0 核心資產，在 Blender 4.5.3 LTS 製作成人半臥姿態、孕腹、病服、形變及原創房間。來源與逐檔雜湊見 docs/fhr-room-provenance.json，授權見 licenses/MakeHuman-core-CC0.md；assets-source/fhr-room.blend 可編輯，scripts/build_fhr_room.py 可重建。GLB 約 3.17 MB。沒有採用 AGPL 模型或執行第三方外掛。
 
 床邊情境使用獨立 obstetric-learning.fhr-room.v1 儲存，不覆寫原曲線、胎位或分娩機轉資料。完整規格 v0.8 五十章五十頁，第四十三至五十章詳列新流程、模型、同步、互動、保存與驗收。醫學數字、語句、容差與真實觸控仍待使用者試教驗收。QR code 延後統一製作。
+
+## 四段觸診與胎心監測（M1，v0.9）
+
+入口 `?module=palpation`。先查 GitHub／原教材及授權，再以 Blender 補製獨立孕腹、四組雙手、覆巾、兩探頭和兩固定帶。沿用 MakeHuman core CC0 掌指拓樸，未改動 M2 模型。來源、資產大小、節點 API 與雜湊見 `docs/palpation-room-provenance.json`；資源查核與畫面核對見 `docs/palpation-design.md`。
+
+流程包含八項床邊準備、四段直接拖曳及判斷、用物與接線、雙帶、TOCO 與 FHR 尋訊、母體脈搏、舒適度、放鬆時歸零、教學記錄、觀察停止及八項收尾。前三段面向頭端，第四段面向腳端；第二段兩側分開完成。示範不計入操作。探頭帶動自己的固定帶貼合腹面；通用面板和床上螢幕同步，提供主動開啟的原創合成心音。
+
+資料鍵為 `obstetric-learning.palpation.v1`，換案或重練需確認，只影響 M1；恢復進度不自動啟動記錄。網頁進度與觸感文字不等於實體技能考核或臨床診斷。一般面板可後續替換指定機型，實際時長與設定依校內 SOP。完整規格 v0.9 保留全部六十章與分階段驗收；QR code 依指示延後統一製作。

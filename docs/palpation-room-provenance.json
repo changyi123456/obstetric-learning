@@ -1,0 +1,770 @@
+{
+  "asset": "palpation-room",
+  "version": "1.0",
+  "prepared_date": "2026-10-15",
+  "tool": "Blender 4.5.3 LTS",
+  "purpose": "Synthetic four-step Leopold palpation teaching room. Patient and examiner are fictional adults. No patient photographs or records.",
+  "source": {
+    "shared_editable_room": "assets-source/fhr-room.blend",
+    "shared_room_sha256": "ac34839e52ef0a0e21dcdddd4f592bef0334d737393d5f36962d6df20b6b2a05",
+    "shared_helpers": "scripts/build_fhr_room.py, pure construction functions only via AST; no top-level code executed",
+    "core_repository": "https://github.com/makehumancommunity/makehuman",
+    "core_commit": "a8bc2d54ff0ac92e78ff71431b1023eda42bf482",
+    "core_license": "CC0-1.0",
+    "license_file": "licenses/MakeHuman-core-CC0.md",
+    "official_asset_statement": "https://static.makehumancommunity.org/about/license.html",
+    "source_license_distinction": "Only explicitly CC0 basemesh, adult female targets, face units, eyes and skin weights are reused. MakeHuman AGPL executable/source code is not included or executed.",
+    "no_complete_hand_pose_asset_found": "The project resource review found no suitable complete authorized four-maneuver set; these poses are newly authored from the CC0 palm/finger/forearm topology."
+  },
+  "authored_changes": [
+    "Supine adult torso and pillow, lower backrest; opaque chest/pelvis coverings and separate privacy abdomen cover",
+    "Continuous analytic pregnant skin mesh with subtle navel and matched raycast/height formula",
+    "Paired knee contours under an opaque drape with Knees_flex morph",
+    "Eight distinct left/right examiner hand poses using genuine palm/finger/forearm topology and short scrub cuffs",
+    "Two independently controlled full belt loops and two repositionable transducers",
+    "Unbranded gel bottle, tissue and recording paper"
+  ],
+  "axes": {
+    "units": "metres",
+    "up": "+Y",
+    "head": "-Z",
+    "feet": "+Z",
+    "maternal_left": "+X",
+    "maternal_right": "-X",
+    "examiner_hand_labels": "L/R always refer to the examiner’s actual physical hand, never the maternal side. s1/s2 examiner faces head, s4 examiner faces feet."
+  },
+  "abdomen": {
+    "node": "Palpation_abdomen",
+    "xRadius": 0.245,
+    "zRadius": 0.345,
+    "centerZ": -0.02,
+    "baseY": 0.835,
+    "height": 0.3,
+    "mapping": "x=.245*u; z=-.020+.345*v",
+    "domain": "u*u+v*v <= 1; interactive path should stay below 0.94 squared radius",
+    "heightFunction": "y=.835+.300*sqrt(max(0,1-(x/.245)^2-((z+.020)/.345)^2))-.009*exp(-(x/.022)^2-((z-.025)/.025)^2)",
+    "normal": "normalize([-dy/dx,1,-dy/dz]); central differences epsilon=.0001 m match the builder",
+    "hoverOffset": 0.025,
+    "collision": "Use the exported mesh raycast or identical analytic surface. Contact-root placement = surfaceTarget - rotation*contactLocal + normal*hoverOffset; hoverOffset zero means tangent contact. The whole hand stays above its contact tangent plane."
+  },
+  "anchors": {
+    "Anchor_fundus": {
+      "uv": [
+        0,
+        -0.64
+      ],
+      "web": [
+        0.0,
+        1.0655124187469482,
+        -0.24079999327659607
+      ]
+    },
+    "Anchor_suprapubic": {
+      "uv": [
+        0,
+        0.72
+      ],
+      "web": [
+        0.0,
+        1.0431922674179077,
+        0.22840000689029694
+      ]
+    },
+    "Anchor_maternal_left": {
+      "uv": [
+        0.75,
+        0
+      ],
+      "web": [
+        0.1837500035762787,
+        1.0334312915802002,
+        -0.019999999552965164
+      ]
+    },
+    "Anchor_maternal_right": {
+      "uv": [
+        -0.75,
+        0
+      ],
+      "web": [
+        -0.1837500035762787,
+        1.0334312915802002,
+        -0.019999999552965164
+      ]
+    },
+    "Anchor_abdomen": {
+      "uv": [
+        0,
+        0
+      ],
+      "web": [
+        0.0,
+        1.1346474885940552,
+        -0.019999999552965164
+      ]
+    }
+  },
+  "hands": {
+    "Examiner_s1_L": {
+      "handedness": "L",
+      "root": "wrist",
+      "contactLocal": [
+        0.000960497884079814,
+        -0.05373797193169594,
+        0.1592811495065689
+      ],
+      "defaultUV": [
+        -0.66,
+        -0.59
+      ],
+      "surfaceContact": [
+        -0.16169999539852142,
+        0.974524199962616,
+        -0.2235500067472458
+      ],
+      "nodePosition": [
+        -0.2827315926551819,
+        1.0098376274108887,
+        -0.11235876381397247
+      ],
+      "quaternion_xyzw": [
+        -0.5034420490264893,
+        0.8224337100982666,
+        -0.16746945679187775,
+        0.20518989861011505
+      ],
+      "wristOffset": [
+        -0.12103159725666046,
+        0.035313427448272705,
+        0.11119124293327332
+      ],
+      "pathUV0": [
+        -0.66,
+        0.56
+      ],
+      "pathUV1": [
+        -0.66,
+        -0.59
+      ],
+      "fingerHint": [
+        0.38,
+        0,
+        -0.92
+      ],
+      "fingerDirectionWeb": [
+        0.5061324834823608,
+        -0.06886259466409683,
+        -0.8597022294998169
+      ],
+      "normalWeb": [
+        -0.7593692541122437,
+        0.43700024485588074,
+        -0.48206743597984314
+      ],
+      "curl_radians_per_metre": 7,
+      "cGrip": false,
+      "hoverOffset": 0.025
+    },
+    "Examiner_s1_R": {
+      "handedness": "R",
+      "root": "wrist",
+      "contactLocal": [
+        -0.000960483041126281,
+        -0.05373797565698624,
+        0.1592811495065689
+      ],
+      "defaultUV": [
+        0.66,
+        -0.59
+      ],
+      "surfaceContact": [
+        0.16169999539852142,
+        0.974524199962616,
+        -0.2235500067472458
+      ],
+      "nodePosition": [
+        0.2827315926551819,
+        1.0098376274108887,
+        -0.11235876381397247
+      ],
+      "quaternion_xyzw": [
+        -0.5034420490264893,
+        -0.8224337100982666,
+        0.16746945679187775,
+        0.20518989861011505
+      ],
+      "wristOffset": [
+        0.12103159725666046,
+        0.035313427448272705,
+        0.11119124293327332
+      ],
+      "pathUV0": [
+        0.66,
+        0.56
+      ],
+      "pathUV1": [
+        0.66,
+        -0.59
+      ],
+      "fingerHint": [
+        -0.38,
+        0,
+        -0.92
+      ],
+      "fingerDirectionWeb": [
+        -0.5061324834823608,
+        -0.06886259466409683,
+        -0.8597022294998169
+      ],
+      "normalWeb": [
+        0.7593692541122437,
+        0.43700024485588074,
+        -0.48206743597984314
+      ],
+      "curl_radians_per_metre": 7,
+      "cGrip": false,
+      "hoverOffset": 0.025
+    },
+    "Examiner_s2_L": {
+      "handedness": "L",
+      "root": "wrist",
+      "contactLocal": [
+        -0.019915033131837845,
+        -0.026462914422154427,
+        0.11649660766124725
+      ],
+      "defaultUV": [
+        -0.73,
+        0.52
+      ],
+      "surfaceContact": [
+        -0.178849995136261,
+        0.9680526256561279,
+        0.15940000116825104
+      ],
+      "nodePosition": [
+        -0.16991856694221497,
+        0.933441698551178,
+        0.27511805295944214
+      ],
+      "quaternion_xyzw": [
+        0.5093998312950134,
+        -0.8337113857269287,
+        -0.19517673552036285,
+        0.08569242805242538
+      ],
+      "wristOffset": [
+        0.00893142819404602,
+        -0.03461092710494995,
+        0.1157180517911911
+      ],
+      "pathUV0": [
+        -0.73,
+        -0.54
+      ],
+      "pathUV1": [
+        -0.73,
+        0.52
+      ],
+      "fingerHint": [
+        0.12,
+        0,
+        -1
+      ],
+      "fingerDirectionWeb": [
+        -0.3417314887046814,
+        0.23813867568969727,
+        -0.9091256856918335
+      ],
+      "normalWeb": [
+        -0.8159345388412476,
+        0.40483570098876953,
+        0.41274550557136536
+      ],
+      "curl_radians_per_metre": 2.6,
+      "cGrip": false,
+      "hoverOffset": 0.025
+    },
+    "Examiner_s2_R": {
+      "handedness": "R",
+      "root": "wrist",
+      "contactLocal": [
+        0.019915029406547546,
+        -0.02646293118596077,
+        0.11649660766124725
+      ],
+      "defaultUV": [
+        0.73,
+        0.52
+      ],
+      "surfaceContact": [
+        0.178849995136261,
+        0.9680526256561279,
+        0.15940000116825104
+      ],
+      "nodePosition": [
+        0.16991856694221497,
+        0.9334417581558228,
+        0.27511805295944214
+      ],
+      "quaternion_xyzw": [
+        0.5093998312950134,
+        0.8337113857269287,
+        0.19517673552036285,
+        0.08569242805242538
+      ],
+      "wristOffset": [
+        -0.00893142819404602,
+        -0.034610867500305176,
+        0.1157180517911911
+      ],
+      "pathUV0": [
+        0.73,
+        -0.54
+      ],
+      "pathUV1": [
+        0.73,
+        0.52
+      ],
+      "fingerHint": [
+        -0.12,
+        0,
+        -1
+      ],
+      "fingerDirectionWeb": [
+        0.3417314887046814,
+        0.23813867568969727,
+        -0.9091256856918335
+      ],
+      "normalWeb": [
+        0.8159345388412476,
+        0.40483570098876953,
+        0.41274550557136536
+      ],
+      "curl_radians_per_metre": 2.6,
+      "cGrip": false,
+      "hoverOffset": 0.025
+    },
+    "Examiner_s3_L": {
+      "handedness": "L",
+      "root": "wrist",
+      "contactLocal": [
+        0.000960497884079814,
+        -0.0474821962416172,
+        0.16291695833206177
+      ],
+      "defaultUV": [
+        -0.12,
+        -0.68
+      ],
+      "surfaceContact": [
+        -0.029400000348687172,
+        1.0519976615905762,
+        -0.25459998846054077
+      ],
+      "nodePosition": [
+        -0.07556650042533875,
+        1.183664083480835,
+        -0.1580079197883606
+      ],
+      "quaternion_xyzw": [
+        -0.11446858197450638,
+        0.9349715113639832,
+        -0.323243111371994,
+        0.09076956659555435
+      ],
+      "wristOffset": [
+        -0.04616650193929672,
+        0.1316664218902588,
+        0.09659206867218018
+      ],
+      "pathUV0": [
+        -0.12,
+        -0.68
+      ],
+      "pathUV1": [
+        -0.12,
+        -0.68
+      ],
+      "fingerHint": [
+        0.1,
+        0,
+        -1
+      ],
+      "fingerDirectionWeb": [
+        0.24373625218868256,
+        -0.583665668964386,
+        -0.7745495438575745
+      ],
+      "normalWeb": [
+        -0.15536844730377197,
+        0.7648217678070068,
+        -0.6252266764640808
+      ],
+      "curl_radians_per_metre": 6,
+      "cGrip": false,
+      "hoverOffset": 0.025
+    },
+    "Examiner_s3_R": {
+      "handedness": "R",
+      "root": "wrist",
+      "contactLocal": [
+        -0.0006317943916656077,
+        -0.07506877183914185,
+        0.14059723913669586
+      ],
+      "defaultUV": [
+        0.22,
+        0.67
+      ],
+      "surfaceContact": [
+        0.05389999970793724,
+        1.0477039813995361,
+        0.21115000545978546
+      ],
+      "nodePosition": [
+        0.19809715449810028,
+        1.0388586521148682,
+        0.2784719467163086
+      ],
+      "quaternion_xyzw": [
+        0.06961822509765625,
+        -0.7551105618476868,
+        -0.3528255522251129,
+        0.5481564402580261
+      ],
+      "wristOffset": [
+        0.14419715106487274,
+        -0.008845329284667969,
+        0.06732194125652313
+      ],
+      "pathUV0": [
+        -0.22,
+        0.67
+      ],
+      "pathUV1": [
+        0.22,
+        0.67
+      ],
+      "fingerHint": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "fingerDirectionWeb": [
+        -0.8769636154174805,
+        0.456521213054657,
+        -0.15007729828357697
+      ],
+      "normalWeb": [
+        0.2816682755947113,
+        0.741334855556488,
+        0.6091679334640503
+      ],
+      "curl_radians_per_metre": 11,
+      "cGrip": true,
+      "hoverOffset": 0.025
+    },
+    "Examiner_s4_L": {
+      "handedness": "L",
+      "root": "wrist",
+      "contactLocal": [
+        0.000960497884079814,
+        -0.034097932279109955,
+        0.16865025460720062
+      ],
+      "defaultUV": [
+        0.53,
+        0.72
+      ],
+      "surfaceContact": [
+        0.12985000014305115,
+        0.9693986773490906,
+        0.22840000689029694
+      ],
+      "nodePosition": [
+        0.2500666379928589,
+        1.0252221822738647,
+        0.11868131905794144
+      ],
+      "quaternion_xyzw": [
+        0.2604532837867737,
+        -0.21054723858833313,
+        -0.4579332172870636,
+        0.8234872221946716
+      ],
+      "wristOffset": [
+        0.12021663784980774,
+        0.05582350492477417,
+        -0.1097186878323555
+      ],
+      "pathUV0": [
+        0.53,
+        0.15
+      ],
+      "pathUV1": [
+        0.53,
+        0.72
+      ],
+      "fingerHint": [
+        -0.22,
+        0,
+        1
+      ],
+      "fingerDirectionWeb": [
+        -0.5853062868118286,
+        -0.23612675070762634,
+        0.7756679654121399
+      ],
+      "normalWeb": [
+        0.6445287466049194,
+        0.4449225962162018,
+        0.6217929720878601
+      ],
+      "curl_radians_per_metre": 4,
+      "cGrip": false,
+      "hoverOffset": 0.025
+    },
+    "Examiner_s4_R": {
+      "handedness": "R",
+      "root": "wrist",
+      "contactLocal": [
+        -0.000960483041126281,
+        -0.03409793600440025,
+        0.16865025460720062
+      ],
+      "defaultUV": [
+        -0.53,
+        0.72
+      ],
+      "surfaceContact": [
+        -0.12985000014305115,
+        0.9693986773490906,
+        0.22840000689029694
+      ],
+      "nodePosition": [
+        -0.2500666677951813,
+        1.0252221822738647,
+        0.11868131905794144
+      ],
+      "quaternion_xyzw": [
+        0.2604532837867737,
+        0.21054723858833313,
+        0.4579332172870636,
+        0.8234872221946716
+      ],
+      "wristOffset": [
+        -0.12021666765213013,
+        0.05582350492477417,
+        -0.1097186878323555
+      ],
+      "pathUV0": [
+        -0.53,
+        0.15
+      ],
+      "pathUV1": [
+        -0.53,
+        0.72
+      ],
+      "fingerHint": [
+        0.22,
+        0,
+        1
+      ],
+      "fingerDirectionWeb": [
+        0.5853062868118286,
+        -0.23612675070762634,
+        0.7756679654121399
+      ],
+      "normalWeb": [
+        -0.6445287466049194,
+        0.4449225962162018,
+        0.6217929720878601
+      ],
+      "curl_radians_per_metre": 4,
+      "cGrip": false,
+      "hoverOffset": 0.025
+    }
+  },
+  "defaultVisibility": {
+    "Examiner_s1_L": false,
+    "Examiner_s1_R": false,
+    "Examiner_s2_L": false,
+    "Examiner_s2_R": false,
+    "Examiner_s3_L": false,
+    "Examiner_s3_R": false,
+    "Examiner_s4_L": false,
+    "Examiner_s4_R": false,
+    "Privacy_cover": true,
+    "Chest_cover": true,
+    "Pelvis_cover": true,
+    "Palpation_abdomen": true,
+    "Belt_FHR": false,
+    "Belt_TOCO": false,
+    "FHR_transducer": false,
+    "TOCO_transducer": false,
+    "Gel_bottle": true,
+    "Clean_tissue": true,
+    "Monitor_recording_paper": true
+  },
+  "visibilityNote": "All nodes are exported. Three.js must apply defaultVisibility before first rendering. GLB extras.defaultVisible is an app hint, not native visibility enforcement.",
+  "patientArms": {
+    "Patient_left_hand": {
+      "wristWeb": [
+        0.29875949025154114,
+        0.8716571927070618,
+        0.07584409415721893
+      ],
+      "shoulderWeb": [
+        0.16500000655651093,
+        0.8920000195503235,
+        -0.35499998927116394
+      ],
+      "elbowWeb": [
+        0.2811873257160187,
+        0.8677522540092468,
+        -0.14283184707164764
+      ],
+      "scope": "One continuous upper-arm/forearm/palm/finger mesh; preserve baseline transform; only small gesture offsets."
+    },
+    "Patient_right_hand": {
+      "wristWeb": [
+        -0.2987595200538635,
+        0.8716571927070618,
+        0.07584410905838013
+      ],
+      "shoulderWeb": [
+        -0.16500000655651093,
+        0.8920000195503235,
+        -0.35499998927116394
+      ],
+      "elbowWeb": [
+        -0.28118735551834106,
+        0.8677522540092468,
+        -0.14283183217048645
+      ],
+      "scope": "One continuous upper-arm/forearm/palm/finger mesh; preserve baseline transform; only small gesture offsets."
+    }
+  },
+  "patientMotion": {
+    "nodes": [
+      "Patient_head",
+      "Patient_body",
+      "Patient_left_hand",
+      "Patient_right_hand",
+      "Chest_cover",
+      "Palpation_abdomen"
+    ],
+    "keys": "Existing face Blink/Talk/Contraction/Breath retained; new chest/abdomen Breath; Pelvis_cover Knees_flex 0=flat, 1=paired bent-knee drape. Preserve each node’s imported baseline quaternion, including supine -26 degree change.",
+    "kneeScope": "Knee flexion is represented by anatomically placed contours under an opaque drape, not exposed leg-joint kinematics."
+  },
+  "probes": {
+    "FHR_transducer": {
+      "uv": [
+        0.56,
+        0.28
+      ],
+      "surface": [
+        0.1371999979019165,
+        1.0689231157302856,
+        0.07660000026226044
+      ],
+      "nodePosition": [
+        0.1371999979019165,
+        1.0879231691360474,
+        0.07660000026226044
+      ],
+      "normal": [
+        0.6429397463798523,
+        0.7311033606529236,
+        0.22829017043113708
+      ],
+      "axis": "+Y",
+      "root": "body center; lowest point local Y=-.015m; runtime position surface+(0,.019,0)"
+    },
+    "TOCO_transducer": {
+      "uv": [
+        0,
+        -0.64
+      ],
+      "surface": [
+        0.0,
+        1.0655124187469482,
+        -0.24079999327659607
+      ],
+      "nodePosition": [
+        0.0,
+        1.08451247215271,
+        -0.24079999327659607
+      ],
+      "normal": [
+        -0.0,
+        0.8098858594894409,
+        -0.5865874886512756
+      ],
+      "axis": "+Y",
+      "root": "body center; lowest point local Y=-.015m; runtime position surface+(0,.019,0)"
+    }
+  },
+  "beltNodes": [
+    "Belt_FHR",
+    "Belt_TOCO"
+  ],
+  "beltClearance": "Top belt surface offset .008m along analytic normal, above maximum .004m belly Breath deformation. Underside flattened under back.",
+  "monitor": "Monitor_screen is a complete single quad; CanvasTexture.flipY=false, same full UV as M2.",
+  "camera": {
+    "position": [
+      1.65,
+      2.0,
+      1.62
+    ],
+    "target": [
+      0,
+      1,
+      -0.07
+    ],
+    "closePosition": [
+      0.85,
+      1.95,
+      0.82
+    ],
+    "closeTarget": [
+      0,
+      1.03,
+      -0.03
+    ],
+    "monitorPosition": [
+      0.22,
+      1.95,
+      0.12
+    ],
+    "monitorTarget": [
+      0,
+      1,
+      -0.02
+    ]
+  },
+  "outputs": {
+    "glb": "public/models/palpation-room.glb",
+    "glb_bytes": 2890852,
+    "glb_sha256": "97f110f2966d851458a9c9dbb06fc78cb87139d6b995f968faaa1c5ffa2b260d",
+    "blend": "assets-source/palpation-room.blend",
+    "blend_sha256": "37cd269f6332e22b2f80376323104c250a0c6bd7a1a59cec17c094a1e2459e78",
+    "builder": "scripts/build_palpation_room.py",
+    "script_sha256": "35d9e0284518aaa5690e33236ad27567981525399059af2388a28eaefb05430e",
+    "nodes": 73,
+    "triangles": 120852
+  },
+  "review": {
+    "full": "/private/tmp/palpation-room-review.png",
+    "poses": [
+      "/private/tmp/palpation-hands-s1.png",
+      "/private/tmp/palpation-hands-s2.png",
+      "/private/tmp/palpation-hands-s3.png",
+      "/private/tmp/palpation-hands-s4.png"
+    ],
+    "monitor_with_both_belts": "/private/tmp/palpation-monitor-review.png",
+    "node_check": "passed",
+    "medical_scope": "Schematic educational geometry and hand animations, pending user content review; no patient-specific diagnosis or force simulation."
+  }
+}
