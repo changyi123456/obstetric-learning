@@ -27,9 +27,9 @@ export default function BedsideViewer(props:Props){
  const [status,setStatus]=useState<'loading'|'ready'|'error'>('loading'),[view,setView]=useState<View>('wide'),[held,setHeld]=useState<Tool|null>(null),[retry,setRetry]=useState(0),[alternatives,setAlternatives]=useState(false);
  const current=useRef({view,held});current.current={view,held};
  const api=useRef<{begin:(id:string,e:PointerEvent)=>void;choose:(id:string)=>void}|null>(null);
- const s=props.state,m=s.monitor,b=m.objects,care=s.phase===6;
+ const s=props.state,m=s.monitor,b=m.objects,care=s.phase===6,disposalReady=care&&b.probeClean&&s.care.includes('wipePatient')&&!b.tissueDisposed;
  useEffect(()=>{setView(care?(s.care.includes('clean')?'tray':'wide'):m.step===0||m.step===3&&!m.gel?'tray':m.step===2||m.step===3?'wide':m.step<5?'bed':'monitor');setHeld(null);current.current.held=null;},[care,m.step,m.gel,s.care.includes('clean')]);
- const hint=held==='gel'?'瓶蓋打開後，將瓶口拖到 FHR 探頭；也可點探頭完成放置。':held?.startsWith('plug_')?'將接頭拖到同名插孔，或點選對應插孔。':held==='tissue'?'按住紙巾，在凝膠上來回擦拭；探頭放回後也要擦淨。':held==='US'||held==='TOCO'?care?'將探頭移回器材盤。':'將探頭移到腹部，放開後確認位置；心音與訊號會隨搜尋改變。':held?.startsWith('strap')?'拖動帶尾調整：向右拉緊、向左放鬆；收尾時向外拉開帶扣。':held==='cover'?'抓住被單邊緣，從腳端往子宮底方向拉回。':held==='volume'?'拖動旋鈕調整音量，留意產婦回應。':'可直接拖動物件，也可點選拿起、再點目的地。空白處拖動可轉視角。';
+ const hint=held==='gel'?'瓶蓋打開後，將瓶口拖到 FHR 探頭；也可點探頭完成放置。':held?.startsWith('plug_')?'將接頭拖到同名插孔，或點選對應插孔。':disposalReady&&(held===null||held==='tissue')?'將用過的紙巾拖到虛線回收處，或直接點選「回收處 · 放入紙巾」。':held==='tissue'?'按住紙巾，在凝膠上來回擦拭；探頭放回後也要擦淨。':held==='US'||held==='TOCO'?care?'將探頭移回器材盤。':'將探頭移到腹部，放開後確認位置；心音與訊號會隨搜尋改變。':held?.startsWith('strap')?'拖動帶尾調整：向右拉緊、向左放鬆；收尾時向外拉開帶扣。':held==='cover'?'抓住被單邊緣，從腳端往子宮底方向拉回。':held==='volume'?'拖動旋鈕調整音量，留意產婦回應。':'可直接拖動物件，也可點選拿起、再點目的地。空白處拖動可轉視角。';
  const descriptors:{id:string;label:string;show:boolean;target?:boolean}[]=[
   ...(['US','TOCO','power'] as const).flatMap(p=>[{id:'plug_'+p,label:p==='power'?'電源接頭':(p==='US'?'FHR':p)+' 接頭',show:!care&&!m.connections.includes(p)&&m.step===0},{id:'socket_'+p,label:p==='power'?'電源插孔':(p==='US'?'FHR':p)+' 插孔',show:held?.startsWith('plug_')??false,target:true}]),
   {id:'power',label:m.power?'電源已開':'開啟電源',show:!care&&m.step===0},
@@ -46,7 +46,7 @@ export default function BedsideViewer(props:Props){
   {id:'volume',label:'音量旋鈕',show:!care&&m.step===5},
   {id:'tissue',label:'拿擦拭紙巾',show:care&&s.care.includes('remove')&&!b.tissueDisposed&&held!=='tissue'},
   {id:'tray',label:'放回器材盤',show:care&&(held==='US'||held==='TOCO'),target:true},
-  {id:'bin',label:'處理用過的紙巾',show:care&&held==='tissue'&&b.tissueUsed,target:true},
+  {id:'bin',label:'回收處 · 放入紙巾',show:care&&!b.tissueDisposed&&(b.tissueUsed||disposalReady),target:true},
   {id:'cover',label:'拉回被單',show:care&&s.care.includes('wipePatient')&&!s.care.includes('cover')},
   {id:'wash',label:s.care.includes('wash')?'手部衛生完成':'壓取手部衛生用品',show:care&&s.care.includes('clean')&&!s.care.includes('wash')}
  ];
@@ -79,7 +79,7 @@ export default function BedsideViewer(props:Props){
   const project=(point:THREE.Vector3)=>{tmp.copy(point).project(camera);return {x:(tmp.x+1)*el!.clientWidth/2,y:(1-tmp.y)*el!.clientHeight/2,z:tmp.z};};
   function setRay(x:number,y:number){const r=renderer.domElement.getBoundingClientRect();pointer.set((x-r.left)/r.width*2-1,1-(y-r.top)/r.height*2);ray.setFromCamera(pointer,camera);}
   function abdomenHit(x:number,y:number):XY|null{setRay(x,y);const belly=nodes.Palpation_abdomen;if(!belly)return null;const hit=ray.intersectObject(belly,true)[0];if(!hit)return null;let u=hit.point.x/.245,v=(hit.point.z+.02)/.345;const n=Math.hypot(u,v);if(n>.94){u*=.94/n;v*=.94/n;}return [u,v];}
-  const near=(id:string,x:number,y:number,radius=42)=>{const p=project(world(id)),r=renderer.domElement.getBoundingClientRect();return p.z<1&&Math.hypot(p.x-x+r.left,p.y-y+r.top)<radius;};
+  const near=(id:string,x:number,y:number,radius=42)=>{const button=hot.current.get(id);if(id==='bin'&&button&&button.style.visibility!=='hidden'){const r=button.getBoundingClientRect();if(x>=r.left-18&&x<=r.right+18&&y>=r.top-18&&y<=r.bottom+18)return true;}const p=project(world(id)),r=renderer.domElement.getBoundingClientRect();return p.z<1&&Math.hypot(p.x-x+r.left,p.y-y+r.top)<radius;};
   function select(tool:Tool|null){heldPoint=tool==='gel'||tool==='tissue'?world(tool).add(new THREE.Vector3(0,.045,0)):null;setHeld(tool);current.current.held=tool;previewTool=tool;previewUV=null;previewValue=null;}
   function act(id:string){const p=live.current,s=p.state,m=s.monitor,b=m.objects,h=current.current.held;
    if(id.startsWith('socket_')){if(h?.startsWith('plug_')){emit({kind:'connect',plug:h.slice(5),socket:id.slice(7)});select(null);}return;}
@@ -89,7 +89,7 @@ export default function BedsideViewer(props:Props){
    if(id==='underTarget'&&(h==='strap0'||h==='strap1')){emit({kind:'under',index:h==='strap0'?0:1});select(null);return;}
    if(id==='abdomen'&&(h==='US'||h==='TOCO')){message('請點腹部的實際位置放置，或用下方替代控制細調。');return;}
    if(id==='tray'&&(h==='US'||h==='TOCO')){emit({kind:'return',probe:h});select(null);return;}
-   if(id==='bin'&&h==='tissue'){emit({kind:'dispose'});select(null);return;}
+   if(id==='bin'){emit({kind:'dispose'});if(b.probeClean&&s.care.includes('wipePatient'))select(null);return;}
    if((id==='US'||id==='TOCO')&&h==='gel'){emit({kind:'gel',target:id});if(id==='US'&&b.capOpen){pour=.8;select(null);}return;}
    if(id==='US'&&h==='tissue'){message('按住紙巾，在探頭表面擦拭；也可使用鍵盤擦拭控制。');return;}
    if(id==='US'||id==='TOCO'||id==='gel'||id==='tissue'||id.startsWith('plug_')||id==='strap0'||id==='strap1'||id==='cover'||id==='volume'){select(id as Tool);}
@@ -120,7 +120,7 @@ export default function BedsideViewer(props:Props){
    else if(h==='strap0'||h==='strap1'){const i=h==='strap0'?0:1;if(care||b.fastened[i]&&Math.abs(e.clientY-d.y)>45){emit({kind:'detach',index:i});select(null);}else if(!b.under[i]){if(near('underTarget',e.clientX,e.clientY,65)){emit({kind:'under',index:i});select(null);}else message('抓住帶尾拉過腹部另一側，再放開。');}else {emit({kind:'strap',index:i,tension:previewValue??d.value,finish:true});select(null);}}
    else if(h==='volume'){emit({kind:'volume',value:previewValue??d.value,finish:true});select(null);}
    else if(h==='cover'){emit({kind:'cover',progress:coverPreview??d.value,finish:true});select(null);}
-   else if(h==='tissue'&&near('bin',e.clientX,e.clientY,55)){emit({kind:'dispose'});select(null);}
+   else if(h==='tissue'){if(near('bin',e.clientX,e.clientY,55)){emit({kind:'dispose'});if(b.probeClean&&live.current.state.care.includes('wipePatient'))select(null);}else if(b.probeClean&&live.current.state.care.includes('wipePatient'))message('紙巾尚未放入；請拖到虛線回收處，或直接點選「回收處 · 放入紙巾」。');}
    previewUV=null;previewTool=null;previewValue=null;coverPreview=null;live.current.onPreview(null);
   }
   function cancel(){if(drag){const d=drag;drag=null;if(renderer.domElement.hasPointerCapture(d.id))renderer.domElement.releasePointerCapture(d.id);}pulsePointer=-1;pulseStart=0;previewUV=null;previewTool=null;previewValue=null;coverPreview=null;live.current.onPreview(null);controls.enabled=true;}
@@ -154,7 +154,11 @@ export default function BedsideViewer(props:Props){
     const knob=nodes.Control_volume;if(knob)knob.rotateZ((b.volume-.5)*Math.PI*1.6);
     if(now-screenStamp>150)drawScreen(now);
     scene.updateMatrixWorld(true);
-    for(const [id,button] of hot.current){const point=world(id);if(id==='cap')point.y+=.03;if(id==='pulse')point.y+=.025;if(id.startsWith('anatomy'))point.y+=.06;const v=project(point);if(id.startsWith('socket_'))v.y+=9;if(id==='power')v.y-=14;button.style.left=`${v.x}px`;button.style.top=`${v.y}px`;button.style.visibility=v.z>1||v.x<18||v.y<65||v.x>el!.clientWidth-18||v.y>el!.clientHeight-20?'hidden':'visible';if(id==='pulse')button.style.setProperty('--hold',`${Math.min(100,pulseStart?(now-pulseStart)/18:0)}%`);}
+    for(const [id,button] of hot.current){const point=world(id);if(id==='cap')point.y+=.03;if(id==='pulse')point.y+=.025;if(id.startsWith('anatomy'))point.y+=.06;const v=project(point);if(id.startsWith('socket_'))v.y+=9;if(id==='power')v.y-=14;
+     // Keep the recovery target reachable when its 3D anchor is outside the
+     // camera. Drop testing uses this same visible button's screen bounds.
+     if(id==='bin'){const xMargin=button.offsetWidth/2+12,yMargin=button.offsetHeight/2+12;v.x=THREE.MathUtils.clamp(v.z>1?el!.clientWidth-xMargin:v.x,xMargin,el!.clientWidth-xMargin);v.y=THREE.MathUtils.clamp(v.z>1?el!.clientHeight-yMargin:v.y,88+yMargin,el!.clientHeight-yMargin);v.z=0;}
+     button.style.left=`${v.x}px`;button.style.top=`${v.y}px`;button.style.visibility=v.z>1||v.x<18||v.y<65||v.x>el!.clientWidth-18||v.y>el!.clientHeight-20?'hidden':'visible';if(id==='pulse')button.style.setProperty('--hold',`${Math.min(100,pulseStart?(now-pulseStart)/18:0)}%`);}
    }renderer.render(scene,camera);
   }raf=requestAnimationFrame(render);
   const lost=(e:Event)=>{e.preventDefault();cancel();setStatus('error');live.current.onReady(false);};renderer.domElement.addEventListener('webglcontextlost',lost);
