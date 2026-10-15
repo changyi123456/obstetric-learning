@@ -1,0 +1,181 @@
+{
+  "asset": "fhr-room",
+  "version": "1.0",
+  "prepared_date": "2026-10-15",
+  "tool": "Blender 4.5.3 LTS",
+  "purpose": "Original interactive obstetric teaching room with clothed fictional adult pregnant patient; no patient photograph or health record.",
+  "upstream": {
+    "project": "MakeHuman Community core assets",
+    "repository": "https://github.com/makehumancommunity/makehuman",
+    "commit": "a8bc2d54ff0ac92e78ff71431b1023eda42bf482",
+    "asset_license": "CC0-1.0",
+    "asset_license_file": "licenses/MakeHuman-core-CC0.md",
+    "official_license_statement": "https://static.makehumancommunity.org/about/license.html",
+    "official_core_asset_faq": "https://static.makehumancommunity.org/mpfb/faq/use_in_closed_source.html",
+    "rights_holders_as_recorded": "Data Collection AB, Joel Palmius, Jonas Hauquier; target files also record the transfer from Manuel Bastioni. See preserved per-file headers.",
+    "software_distinction": "MakeHuman source code is AGPL; only its explicitly CC0 core data files were used. No MakeHuman code or add-on is executed or included."
+  },
+  "preserved_core_files": [
+    {
+      "file": "assets-source/makehuman-core/asian-female-young.target",
+      "sha256": "095fe79694fa19e1fe98d93009ec116199bd524e081c640351a10eccf2cca1eb",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/base.obj",
+      "sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/brown_eye.png",
+      "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/default_weights.mhw",
+      "sha256": "0f3641d651ae3d00ad6b4ccee43142edb109d3bd909d27d9e4139ef1beed8625",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/expression/eye-left-closure.target",
+      "sha256": "96d43015f95af63d1d5d64c2d234ac29571d7b05a21e900cf5ee15a246337ebf",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/expression/eye-right-closure.target",
+      "sha256": "772a8a1c62dac36fa2ed6b0808d167bda298ec1ece956af0561e7324a0c91a6b",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/expression/eyebrows-left-down.target",
+      "sha256": "89999e77f486dda420fde6d67ca7e32e885d80e816111e776ff292efe41b209d",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/expression/eyebrows-right-down.target",
+      "sha256": "86f0d1440944fa4754d24c128f7d105f6a93dbd6ce9204be972bcb2ad5be4cec",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/expression/mouth-compression.target",
+      "sha256": "b7abd0826708d7e4344559583edd0fc80e098b08b91f3e6d67d83b1eed20ccbe",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/expression/mouth-open.target",
+      "sha256": "2222072e34027f7bc05e53548878832b041cb9b749062e369468d6946e68a32b",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/eyes.mhclo",
+      "sha256": "68582e28e9176cba7cfcf35208f671b6201b8d1bc95c32decff61a3160ec34d8",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/eyes.obj",
+      "sha256": "783fe1e6331162c876520b4c2bed7a8ca06354ca15497e8ebd68bb1b59f4d3de",
+      "license": "CC0-1.0"
+    },
+    {
+      "file": "assets-source/makehuman-core/universal-female-young-averagemuscle-averageweight.target",
+      "sha256": "4ba5396ddabda448ece15650a566fbebfbb10239256ccb201e8f883429e12249",
+      "license": "CC0-1.0"
+    }
+  ],
+  "original_work": [
+    "Room architecture, furniture, bedding, curtain, monitor, cables, independent transducer meshes",
+    "Maternity gown derived from core body topology, original woven dot texture and coverage",
+    "Pregnancy surface deformation, semi-reclined arm/hand pose, hair surface and swept strands, face complexion and iris detail",
+    "All Blender construction/export/optimization code"
+  ],
+  "modifications": [
+    "Apply asian-female-young and universal-female-young-averagemuscle-averageweight core targets at weight 1",
+    "Uniform base scale 0.111; pose changes are for this illustrative fictional adult and are not a clinical anatomical measurement",
+    "Clothed late-pregnancy silhouette, covered lower body, bedside left-hand interaction surface",
+    "Official Asian face-unit targets supply bilateral Blink, mouth-open Talk, eyebrows-down/mouth-compression Contraction",
+    "Original Breath morph adds a small smooth chest rise; other body parts retain four compatible named keys",
+    "Core brown-eye texture resized to 256 px; original full texture retained in editable source folder",
+    "Export-only static mesh batching by material; editable .blend retains separate room parts, curves and modifiers"
+  ],
+  "runtime": {
+    "units": "metres",
+    "axes": "+X room right, +Y up, bed head toward -Z",
+    "bed_surface_y": 0.78,
+    "camera_example": [
+      2.35,
+      2.28,
+      2.55
+    ],
+    "camera_target": [
+      0,
+      1.12,
+      -0.05
+    ],
+    "required_nodes": [
+      "Patient_head",
+      "Patient_body",
+      "Patient_chest",
+      "Patient_left_hand",
+      "Patient_right_hand",
+      "FHR_transducer",
+      "TOCO_transducer",
+      "Monitor_screen",
+      "Curtain_dynamic",
+      "Anchor_patient",
+      "Anchor_pulse",
+      "Anchor_monitor",
+      "Anchor_abdomen"
+    ],
+    "morph_targets": [
+      "Blink",
+      "Talk",
+      "Contraction",
+      "Breath"
+    ],
+    "morph_range": [
+      0,
+      1
+    ],
+    "head_pivot_web": [
+      0,
+      1.1136907,
+      -0.3300254
+    ],
+    "head_children": "Eyes, brows and batched hair/iris meshes inherit Patient_head; preserve base transforms and use only small nod/turn offsets.",
+    "hand_pivot": "Patient_left_hand and Patient_right_hand origins are surface centroids, suitable for small gesture offsets; do not rotate through a wide angle.",
+    "monitor_uv": "Single quad facing +Z; full 0-1 UV. In GLB, upper left is (0,0), lower right is (1,1). CanvasTexture.flipY=false.",
+    "probe_motion": "Independent FHR_transducer / TOCO_transducer nodes; their *_face children move with them. Raycast Patient_chest to keep small changes on the surface. Suggested X-only adjustment approximately 0.03 m.",
+    "probe_initial_positions": {
+      "FHR_transducer": [
+        0.06393435597419739,
+        1.1974767446517944,
+        0.07897861301898956
+      ],
+      "TOCO_transducer": [
+        -0.037295710295438766,
+        1.1847678422927856,
+        -0.12550418078899384
+      ]
+    },
+    "static_waveforms": false,
+    "clinical_scope": "Device positions are schematic visual interaction locations on covered clothing, not clinical placement instruction or treatment simulation."
+  },
+  "outputs": {
+    "glb": "public/models/fhr-room.glb",
+    "glb_bytes": 3169628,
+    "glb_sha256": "66e65473531af0baf95f9a00276bc74fedda2f2bf96fd01d6c4ebdfabdd793dd",
+    "editable_blend": "assets-source/fhr-room.blend",
+    "blend_sha256": "ac34839e52ef0a0e21dcdddd4f592bef0334d737393d5f36962d6df20b6b2a05",
+    "rebuild_script": "scripts/build_fhr_room.py",
+    "script_sha256": "456f1324a7ac4f241e18057c77f7bc6161f5ebe66ddf69174bd7ae0bcb50dfda",
+    "nodes": 35,
+    "meshes": 31,
+    "primitives": 31
+  },
+  "review": {
+    "overall_render": "/private/tmp/fhr-room-review.png",
+    "patient_close_render": "/private/tmp/fhr-room-patient-close.png",
+    "required_node_check": "passed",
+    "medical_content_approval": "User review pending; this is illustrative synthetic teaching content."
+  }
+}

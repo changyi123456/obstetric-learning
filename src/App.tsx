@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { ArrowRight, ArrowLeft, Check, CheckCircle2, CircleHelp, RotateCcw, Trash2, X, BookOpen, Download, Home, Expand, Compass } from 'lucide-react';
 import { POSITIONS, LESSONS, getPosition, validateAnswer, explainAnswer, type PoseCode, type LearningMode } from './positions';
 import { STORAGE_KEY, readProgress, newProgress, beginRound, submitAttempt, nextQuestion } from './storage';
-const FhrModule=lazy(()=>import('./FhrModule'));
+const FhrModule=lazy(()=>import('./FhrExperience'));
 const BirthModule=lazy(()=>import('./BirthModule'));
 const AnatomyViewer=lazy(()=>import('./AnatomyViewer'));
 const MODULES=[{id:'fetal-position',name:'胎位辨識',subtitle:'理解方向與六種枕位',available:true},{id:'birth-mechanism',name:'分娩機轉',subtitle:'七階段的空間與動作',available:true},{id:'fetal-heart-rate',name:'胎心率',subtitle:'觀察曲線與時間關係',available:true},{id:'palpation',name:'觸診與監測',subtitle:'四段觸診與探頭操作',available:false}];

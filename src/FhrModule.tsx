@@ -4,7 +4,7 @@ import FhrChart, { ReferenceTimes, type TimeWindow } from './FhrChart';
 import { FHR_CASES, FHR_TYPES, FHR_VERSION, MARK_TOLERANCE, assessTrace, clampTime, intervalLabel, targetInterval, timeLabel, valuesAt, type MarkKind } from './fhr';
 import { FHR_KEY, beginFhrQuiz, freshFhr, nextFhr, readFhr, selectTrace, submitFhr } from './fhr-storage';
 import './fhr.css';
-export default function FhrModule(){
+export default function FhrModule({navigation}:{navigation?:React.ReactNode}){
  const [p,setP]=useState(readFhr),[cursor,setCursor]=useState(p.cursor),[playing,setPlaying]=useState(false),[speed,setSpeed]=useState(10),[range,setRange]=useState<TimeWindow>([0,420]);
  const [error,setError]=useState(''),[saveError,setSaveError]=useState(false),[dialog,setDialog]=useState<'clear'|'summary'|'sources'|null>(null);
  const dialogRef=useRef<HTMLDialogElement>(null),cursorRef=useRef(cursor);cursorRef.current=cursor;
@@ -32,7 +32,7 @@ export default function FhrModule(){
  const live=valuesAt(trace,cursor),targetC=trace.contractions[trace.target];
  return <main className="learning-app fhr-app">
  <div className="page-heading"><div><h1>胎心率</h1><p>對齊兩條曲線，理解減速與宮縮的時間關係。</p></div><div className="fhr-heading-actions"><button className="text-button" onClick={showSummary}><BookOpen size={15}/>學習摘要</button><button className="text-button" onClick={()=>{setPlaying(false);setDialog('clear');}}><Trash2 size={15}/>清除紀錄</button></div></div>
- <div className="learning-grid fhr-grid"><section className="visual-column" aria-label="胎心率曲線教學">
+ {navigation}<div className="learning-grid fhr-grid"><section className="visual-column" aria-label="胎心率曲線教學">
  <div className="mode-tabs" role="tablist" aria-label="胎心率學習模式">{([{id:'watch',label:'示範教學'},{id:'practice',label:'標記練習'},{id:'quiz',label:'自主判讀'}] as const).map(m=><button key={m.id} role="tab" aria-selected={p.mode===m.id} onClick={()=>mode(m.id)}>{m.label}</button>)}</div>
  <div className="fhr-trace-heading"><div><b>{watch?meta.name:p.mode==='quiz'?`第 ${p.quizIndex+1} / 6 題`:`練習 ${FHR_CASES.indexOf(trace)+1} / 9`}</b><span>{watch?meta.english:'請觀察標示的中間事件'}</span></div><span className="fhr-target-label">觀察區 {timeLabel(120)}–{timeLabel(280)}</span></div>
  <div className="fhr-plot"><FhrChart trace={trace} marks={p.marks} cursor={cursor} window={range} reveal={reveal} locked={watch||p.submitted||dialog!==null||p.complete} onMark={mark} onSeek={seek}/></div>
