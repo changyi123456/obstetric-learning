@@ -1,0 +1,27 @@
+{
+  "selected": "Human Reference Atlas United Female v1.5",
+  "doi": "10.48539/HBM352.BTSQ.586",
+  "license": "CC-BY-4.0",
+  "authors": [
+    "Kristen Browne",
+    "Heidi Schlehlein"
+  ],
+  "verifiedAt": "2026-10-15",
+  "source": "https://cdn.humanatlas.io/digital-objects/ref-organ/united-female/v1.5/assets/3d-vh-f-united.glb",
+  "sourceSha256": "472567a56896b9b7890508da6501fbf858e56aaa30745365f7a71ade782b529c",
+  "components": [
+    "VH_F_sacrum",
+    "VH_F_coccyx",
+    "VH_F_ilium_compact_bone_L",
+    "VH_F_ilium_compact_bone_R",
+    "VH_F_ischium_compact_bone_L",
+    "VH_F_ischium_compact_bone_R",
+    "VH_F_pubis_compact_bone_L",
+    "VH_F_pubis_compact_bone_R"
+  ],
+  "rejectedCandidate": {
+    "repository": "https://github.com/MSF3Dprinting/pelvis-model",
+    "commit": "bc6c8c0b42fa9aefa51c6692c64b7754a101f941",
+    "reason": "Pelvic completeness and visual surface unsuitable for this teaching view; user rejected appearance."
+  }
+}

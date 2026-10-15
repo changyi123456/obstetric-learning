@@ -1,0 +1,16 @@
+Female pelvis derived from the Human Reference Atlas
+3D Reference Organ Set for United, Female, v1.5
+Creators: Kristen Browne and Heidi Schlehlein (2023).
+DOI: https://doi.org/10.48539/HBM352.BTSQ.586
+Original: https://cdn.humanatlas.io/digital-objects/ref-organ/united-female/v1.5/assets/3d-vh-f-united.glb
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/legalcode
+The original reference organ set uses Visible Human Female data provided by the National Library of Medicine.
+
+Modifications in this project: extracted eight outer pelvic bone meshes (bilateral ilium, ischium and pubis, sacrum, coccyx); removed other body structures; normalized position and uniform scale; merged coincident vertices; recalculated smooth normals; replaced material; exported GLB. No nonuniform reshaping of the female pelvis.
+The adapted object is illustrative and has not received the user's final medical content approval.
+
+The fetal body was authored in Blender for this project. It is a simplified educational illustration, not a biometric or biomechanical simulation.
+
+License metadata verified with DataCite on 2026-10-15:
+https://api.datacite.org/dois/10.48539/HBM352.BTSQ.586
