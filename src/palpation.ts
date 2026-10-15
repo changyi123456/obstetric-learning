@@ -49,7 +49,7 @@ export type Action=
  |{type:'motion';progress:number;finish:boolean}|{type:'answer';value:number}|{type:'retry'}|{type:'next'}|{type:'phase';value:Phase}
  |{type:'item';value:number}|{type:'connect';value:string}|{type:'power'}|{type:'cooperate'}|{type:'beltsUnder'}|{type:'gel'}
  |{type:'probe';probe:Probe;position:XY;finish:boolean}|{type:'pulse'}|{type:'compare';value:boolean}|{type:'belt';index:0|1;value:string}|{type:'comfort'}
- |{type:'zero';relaxed:boolean}|{type:'record'}|{type:'stop'}|{type:'volume'}|{type:'explainMonitor'}|{type:'observe';value:boolean}|{type:'monitorStep';value:number}|{type:'monitorNext'}
+ |{type:'zero';relaxed:boolean}|{type:'record'}|{type:'stop'}|{type:'finishMonitoring'}|{type:'volume'}|{type:'explainMonitor'}|{type:'observe';value:boolean}|{type:'monitorStep';value:number}|{type:'monitorNext'}
  |{type:'bedside';event:BedsideEvent}|{type:'care';value:string}|{type:'message';text:string}|{type:'reset';caseId:CaseId};
 function clinicalReducer(state:PalpationState,a:Action):PalpationState {
  if(a.type==='reset')return initialPalpation(a.caseId);
@@ -84,6 +84,7 @@ function clinicalReducer(state:PalpationState,a:Action):PalpationState {
  if(a.type==='zero'){for(let i=0;i<=4;i++){const missing=monitorMissing(s,i);if(missing)return fail(missing);}if(!a.relaxed)return fail('目前是收縮示意，請在子宮放鬆狀態完成基線歸零。');if(m.recording)return fail('請先停止記錄，再歸零。');m.zero=true;return ok('TOCO 基線已歸零；這是通用面板流程，不代表特定機型設定。');}
  if(a.type==='record'){for(let i=0;i<=4;i++){const missing=monitorMissing(s,i);if(missing)return fail(missing);}if(!m.zero)return fail('請先在子宮放鬆時完成 TOCO 基線歸零。');m.recording=true;m.recorded=true;return ok('正在顯示教學記錄。此片段不等於完成臨床所需監測時長。');}
  if(a.type==='stop'){if(!m.recorded)return fail('尚未開始記錄。');m.recording=false;return ok('記錄已停止。');}
+ if(a.type==='finishMonitoring'){for(let i=0;i<=5;i++){const missing=monitorMissing(s,i);if(missing)return fail(missing);}m.observed=true;m.recording=false;s.phase=6;return ok('已確認教學片段的觀察並停止監測，接著進行收尾照護。');}
  if(a.type==='volume'){m.volume=true;return ok('音量已確認合適。','聽得到，不會太大聲。');}
  if(a.type==='explainMonitor'){m.explained=true;return ok('已說明監測目的、依機型與課程 SOP 確認實際時長及何時移除。','好，若不舒服我會告訴你。');}
  if(a.type==='observe'){if(!m.recorded)return fail('請先開始教學記錄。');if(!a.value)return fail('本片段顯示胎心波動與宮縮相對訊號；外測 TOCO 不能量得絕對宮縮強度。');m.observed=true;return ok('已記錄教學片段的胎心波動與相對宮縮變化。短片段不判定完整基線或臨床正常。');}
