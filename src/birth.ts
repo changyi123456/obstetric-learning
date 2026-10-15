@@ -43,8 +43,8 @@ export function submitOrder(p:BirthProgress,at=new Date().toISOString()):BirthPr
   return {...p,orderSubmitted:true,orderHistory:[...p.orderHistory,{id:crypto.randomUUID(),order:[...p.order],correct:result.correct,matches:result.matches,hinted:p.orderHinted,at}]};
 }
 function isStage(n:unknown):n is number{return Number.isInteger(n)&&Number(n)>=0&&Number(n)<7;}
-export function readBirth(storage:Pick<Storage,'getItem'>=localStorage):BirthProgress{
-  try{const raw=storage.getItem(BIRTH_KEY);if(!raw)return newBirthProgress();const p=JSON.parse(raw) as BirthProgress;
+export function readBirth(storage?:Pick<Storage,'getItem'>):BirthProgress{
+  try{const raw=(storage??localStorage).getItem(BIRTH_KEY);if(!raw)return newBirthProgress();const p=JSON.parse(raw) as BirthProgress;
     if(p.version!==BIRTH_VERSION||!['watch','practice','order'].includes(p.mode)||!isStage(p.stage)||!Number.isFinite(p.cursor)||p.cursor<0||p.cursor>7||!Number.isFinite(p.primary)||p.primary< -100||p.primary>100||!Number.isFinite(p.secondary)||p.secondary<0||p.secondary>100||!Array.isArray(p.completed)||!p.completed.every(isStage)||new Set(p.completed).size!==p.completed.length||!Array.isArray(p.order)||p.order.length>7||!p.order.every(isStage)||new Set(p.order).size!==p.order.length||!Array.isArray(p.attempts)||!p.attempts.every(a=>a&&isStage(a.stage)&&typeof a.id==='string'&&typeof a.correct==='boolean')||!Array.isArray(p.orderHistory)||!p.orderHistory.every(a=>a&&Array.isArray(a.order)&&checkOrder(a.order).valid&&typeof a.correct==='boolean')||['submitted','hinted','orderSubmitted','orderHinted','reduced'].some(k=>typeof p[k as keyof BirthProgress]!=='boolean')||(p.orderSubmitted&&!checkOrder(p.order).valid))return newBirthProgress();
     return p;
   }catch{return newBirthProgress();}

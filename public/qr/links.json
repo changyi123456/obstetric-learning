@@ -1,0 +1,26 @@
+[
+  {
+    "name": "胎位辨識",
+    "module": "fetal-position",
+    "file": "01_胎位辨識.png",
+    "url": "https://changyi123456.github.io/obstetric-learning/?module=fetal-position"
+  },
+  {
+    "name": "分娩機轉",
+    "module": "birth-mechanism",
+    "file": "02_分娩機轉.png",
+    "url": "https://changyi123456.github.io/obstetric-learning/?module=birth-mechanism"
+  },
+  {
+    "name": "胎心率情境觀察",
+    "module": "fetal-heart-rate",
+    "file": "03_胎心率情境觀察.png",
+    "url": "https://changyi123456.github.io/obstetric-learning/?module=fetal-heart-rate"
+  },
+  {
+    "name": "四段觸診與胎心監測",
+    "module": "palpation",
+    "file": "04_四段觸診與胎心監測.png",
+    "url": "https://changyi123456.github.io/obstetric-learning/?module=palpation"
+  }
+]

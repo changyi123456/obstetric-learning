@@ -1,3 +1,4 @@
+import {assetUrl} from './assets';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -50,7 +51,7 @@ export default function AnatomyViewer(props: Props) {
     const markerRing=new THREE.Mesh(new THREE.TorusGeometry(.09,.01,8,36),new THREE.MeshBasicMaterial({color:'#1594a0'}));markerRing.position.copy(occiput.position);fetus.add(markerRing);
     const loader=new GLTFLoader();
     setStatus('loading');
-    Promise.all([loader.loadAsync('/models/pelvis.glb'),loader.loadAsync('/models/fetus.glb')]).then(([p,f])=>{
+    Promise.all([loader.loadAsync(assetUrl('models/pelvis.glb')),loader.loadAsync(assetUrl('models/fetus.glb'))]).then(([p,f])=>{
       if(disposed)return;
       p.scene.traverse(obj=>{if(obj instanceof THREE.Mesh){obj.material=new THREE.MeshStandardMaterial({color:'#eee1c8',roughness:.78,metalness:0,side:THREE.DoubleSide,transparent:true,opacity:propsRef.current.opacity,depthWrite:true});}});
       pelvis.add(p.scene);fetus.add(f.scene);setStatus('ready');propsRef.current.onReady?.(true);

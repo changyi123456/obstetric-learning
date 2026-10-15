@@ -1,3 +1,4 @@
+import {assetUrl} from './assets';
 import {useEffect,useRef,useState} from 'react';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
@@ -66,7 +67,7 @@ export default function BedsideViewer(props:Props){
   const dots=GEL_DOTS.map(()=>{const mesh=new THREE.Mesh(new THREE.CircleGeometry(.018,16),new THREE.MeshPhysicalMaterial({color:0xd3e9e8,transparent:true,opacity:.3,roughness:.12,metalness:.04,side:THREE.DoubleSide,depthWrite:false}));scene.add(mesh);return mesh;});
   const stream=new THREE.Mesh(new THREE.CylinderGeometry(.003,.005,.13,10),new THREE.MeshPhysicalMaterial({color:0xa3d7dc,transparent:true,opacity:.7,roughness:.1}));scene.add(stream);stream.visible=false;
   const cables=(['US','TOCO','power'] as const).map(()=>{const l=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0x495d63}));scene.add(l);return l;});
-  new GLTFLoader().load('/models/palpation-room.glb?v=1.1.0',g=>{if(dead){dispose(g.scene);return;}root=g.scene;scene.add(root);root.traverse(o=>{nodes[o.name]=o;bases.set(o,{position:o.position.clone(),quaternion:o.quaternion.clone(),scale:o.scale.clone()});if(o instanceof THREE.Mesh){o.castShadow=true;o.receiveShadow=true;if(o.morphTargetDictionary)morphs.push(o);}if(o.name.startsWith('Examiner_'))o.visible=false;});
+  new GLTFLoader().load(assetUrl('models/palpation-room.glb?v=1.1.0'),g=>{if(dead){dispose(g.scene);return;}root=g.scene;scene.add(root);root.traverse(o=>{nodes[o.name]=o;bases.set(o,{position:o.position.clone(),quaternion:o.quaternion.clone(),scale:o.scale.clone()});if(o instanceof THREE.Mesh){o.castShadow=true;o.receiveShadow=true;if(o.morphTargetDictionary)morphs.push(o);}if(o.name.startsWith('Examiner_'))o.visible=false;});
    const screen=nodes.Monitor_screen;if(screen instanceof THREE.Mesh){const old=screen.material;screen.material=new THREE.MeshBasicMaterial({map:screenTexture,toneMapped:false});for(const m of Array.isArray(old)?old:[old])m.dispose();}
    const cover=nodes.Privacy_cover;if(cover instanceof THREE.Mesh){for(const m of Array.isArray(cover.material)?cover.material:[cover.material]){m.clippingPlanes=[new THREE.Plane(new THREE.Vector3(0,0,1),-.37)];m.clipShadows=true;}}
    setStatus('ready');live.current.onReady(true);live.current.onAction({type:'bedside',event:{kind:'activate'}});

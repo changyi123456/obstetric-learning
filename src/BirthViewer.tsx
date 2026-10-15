@@ -1,3 +1,4 @@
+import {assetUrl} from './assets';
 import {useEffect,useRef,useState} from 'react';
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
@@ -45,7 +46,7 @@ export default function BirthViewer(props:Props){
     const curve=new THREE.CatmullRomCurve3(Array.from({length:65},(_,i)=>{const z=.48*Math.sin(i/64*Math.PI*2);return new THREE.Vector3(.64*Math.cos(i/64*Math.PI*2),.35-.7*z,z);}),true);
     const inlet=new THREE.Mesh(new THREE.TubeGeometry(curve,80,.009,6,true),new THREE.MeshBasicMaterial({color:'#80aeb6',transparent:true,opacity:.8}));scene.add(inlet);
     const loader=new GLTFLoader();
-    Promise.all([loader.loadAsync('/models/pelvis.glb'),loader.loadAsync(`/models/birth-fetus.glb?v=${motion.version}`)]).then(([pelvis,fetus])=>{
+    Promise.all([loader.loadAsync(assetUrl('models/pelvis.glb')),loader.loadAsync(assetUrl(`models/birth-fetus.glb?v=${motion.version}`))]).then(([pelvis,fetus])=>{
       if(dead){dispose(pelvis.scene);dispose(fetus.scene);return;}
       pelvis.scene.traverse(o=>{if(o instanceof THREE.Mesh){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());const mat=new THREE.MeshStandardMaterial({color:'#eee1c8',roughness:.78,transparent:true,side:THREE.DoubleSide});o.material=mat;bones.push(mat);}});
       fetus.scene.traverse(o=>{if(o instanceof THREE.Mesh){o.frustumCulled=false;o.material=(o.material as THREE.Material).clone();fetalMeshes.push(o);if(o.name.startsWith('Birth_body_surface'))body=o;}});

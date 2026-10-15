@@ -1,3 +1,4 @@
+import {assetUrl} from './assets';
 import {useEffect,useRef,useState} from 'react';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
@@ -29,7 +30,7 @@ export default function FhrRoomViewer(props:RoomProps){
   let root:THREE.Group|undefined,head:THREE.Object3D|undefined,hand:THREE.Object3D|undefined,probe:THREE.Object3D|undefined,probeBase:THREE.Vector3|undefined;
   const screenCanvas=document.createElement('canvas');screenCanvas.width=640;screenCanvas.height=400;const screenContext=screenCanvas.getContext('2d')!;const screenTexture=new THREE.CanvasTexture(screenCanvas);screenTexture.colorSpace=THREE.SRGBColorSpace;screenTexture.flipY=false;let screenTime=-1,screenCase:SceneCaseId|undefined;
   const morphMeshes:THREE.Mesh[]=[];const anchorNodes:Record<string,THREE.Object3D|undefined>={};const originals=new Map<THREE.Object3D,{rotation:THREE.Euler;position:THREE.Vector3}>();
-  new GLTFLoader().load('/models/fhr-room.glb?v=2',g=>{
+  new GLTFLoader().load(assetUrl('models/fhr-room.glb?v=2'),g=>{
    if(dead){release(g.scene);return;}root=g.scene;scene.add(root);root.traverse(o=>{if(o instanceof THREE.Mesh){o.castShadow=true;o.receiveShadow=true;if(o.morphTargetDictionary)morphMeshes.push(o);}});
    head=root.getObjectByName('Patient_head');hand=root.getObjectByName('Patient_left_hand');probe=root.getObjectByName('FHR_transducer');probeBase=probe?.position.clone();
    const screen=root.getObjectByName('Monitor_screen');if(screen instanceof THREE.Mesh){const old=screen.material;screen.material=new THREE.MeshBasicMaterial({map:screenTexture,toneMapped:false});for(const m of Array.isArray(old)?old:[old])m.dispose();}

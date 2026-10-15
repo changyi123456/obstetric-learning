@@ -67,7 +67,7 @@ blender --background --python scripts/inspect_birth.py -- /absolute/path/obstetr
 
 頭頸採漸變權重，頭與手分開綁定。動畫只供單一 LOA 教學示意，不提供真實尺寸、產程預測、接生拉力、軟組織或接觸力學模擬。幾何檢查只能排查既定動畫的穿模，不能視為臨床驗證。模型比率與位移均為正規化示意值。
 
-操作紀錄使用獨立 `obstetric-learning.birth.v1`，保存各段完成、首次結果、重試、提示及排序紀錄，可下載 JSON 摘要。觀看動畫不計入操作完成；清除本模組不影響胎位紀錄。QR code 依最新指示延後統一製作。
+操作紀錄使用獨立 `obstetric-learning.birth.v1`，保存各段完成、首次結果、重試、提示及排序紀錄，可下載 JSON 摘要。觀看動畫不計入操作完成；清除本模組不影響胎位紀錄。本階段當時延後 QR code；統一發行的正式入口與圖片見下方。
 
 完整製作規格以 `scripts/build_spec.py` 產生於工作區 `output/`，保留原四模組全階段，新增 M3 的資源、Blender、逐段互動、保存及驗收細項。
 
@@ -92,7 +92,7 @@ Pointer Events 支援滑鼠及觸控，抓取採指標捕捉，取消、失焦�
 
 `src/fhr.ts` 的事件與答案共用資料，九段都可重現；包含平台答案區間與谷底正好對齊宮縮的變異性減速。參考位置前後 5 秒為待試教校準容差。六題自主判讀三類各兩題，題序保存；`obstetric-learning.fhr.v1` 獨立保存草稿、首次結果、重試與提示，可下載 JSON 或確認後僅清除本模組。
 
-已檢查桌面與手機尺寸 IAB 的實際拖動、放大、平台邊界、分項錯誤回饋、正確與重試、重新整理、六題完成、摘要與下載。24 項自動測試涵蓋三個已實作模組；完整規格 v0.7 共 42 頁，第三十六至四十二章列製作細節。真正觸控裝置與九段題庫醫學核准仍按規格回看。QR code 仍延後。
+已檢查桌面與手機尺寸 IAB 的實際拖動、放大、平台邊界、分項錯誤回饋、正確與重試、重新整理、六題完成、摘要與下載。24 項自動測試涵蓋三個已實作模組；完整規格 v0.7 共 42 頁，第三十六至四十二章列製作細節。真正觸控裝置與九段題庫醫學核准仍按規格回看。本階段當時延後 QR code；統一發行見下方。
 
 ## 胎心率動態產房 M2 v0.8
 
@@ -100,7 +100,7 @@ Pointer Events 支援滑鼠及觸控，抓取採指標捕捉，取消、失焦�
 
 先查 GitHub，採 MakeHuman 官方 CC0 核心資產，在 Blender 4.5.3 LTS 製作成人半臥姿態、孕腹、病服、形變及原創房間。來源與逐檔雜湊見 docs/fhr-room-provenance.json，授權見 licenses/MakeHuman-core-CC0.md；assets-source/fhr-room.blend 可編輯，scripts/build_fhr_room.py 可重建。GLB 約 3.17 MB。沒有採用 AGPL 模型或執行第三方外掛。
 
-床邊情境使用獨立 obstetric-learning.fhr-room.v1 儲存，不覆寫原曲線、胎位或分娩機轉資料。完整規格 v0.8 五十章五十頁，第四十三至五十章詳列新流程、模型、同步、互動、保存與驗收。醫學數字、語句、容差與真實觸控仍待使用者試教驗收。QR code 延後統一製作。
+床邊情境使用獨立 obstetric-learning.fhr-room.v1 儲存，不覆寫原曲線、胎位或分娩機轉資料。完整規格 v0.8 五十章五十頁，第四十三至五十章詳列新流程、模型、同步、互動、保存與驗收。醫學數字、語句、容差與真實觸控仍待使用者試教驗收。本階段當時延後 QR code；統一發行見下方。
 
 ## 四段觸診與胎心監測（M1，v0.9）
 
@@ -108,8 +108,30 @@ Pointer Events 支援滑鼠及觸控，抓取採指標捕捉，取消、失焦�
 
 流程包含八項床邊準備、四段直接拖曳及判斷、用物與接線、雙帶、TOCO 與 FHR 尋訊、母體脈搏、舒適度、放鬆時歸零、教學記錄、觀察停止及八項收尾。前三段面向頭端，第四段面向腳端；第二段兩側分開完成。示範不計入操作。探頭帶動自己的固定帶貼合腹面；通用面板和床上螢幕同步，提供主動開啟的原創合成心音。
 
-資料鍵為 `obstetric-learning.palpation.v1`，換案或重練需確認，只影響 M1；恢復進度不自動啟動記錄。網頁進度與觸感文字不等於實體技能考核或臨床診斷。一般面板可後續替換指定機型，實際時長與設定依校內 SOP。完整規格 v0.9 保留全部六十章與分階段驗收；QR code 依指示延後統一製作。
+資料鍵為 `obstetric-learning.palpation.v1`，換案或重練需確認，只影響 M1；恢復進度不自動啟動記錄。網頁進度與觸感文字不等於實體技能考核或臨床診斷。一般面板可後續替換指定機型，實際時長與設定依校內 SOP。完整規格 v0.9 保留全部六十章與分階段驗收；本階段當時延後 QR code；統一發行見下方。
 
 ### 監測與收尾物件操作
 
 M1 監測改為直接連接接頭、開凝膠瓶、移動探頭、拉動兩條帶尾及操作監視器；收尾實際解扣、返回、擦拭和拉回被單。側欄依物件狀態自動記錄進度。點選拿取／目的地和鍵盤替代共用相同條件。床簾在隱私準備時沿U形軌道實際閉合；相機保持簾內。新增器材為Blender原創，來源查核與QA見 `docs/palpation-design.md`。完整規格v1.0的第61–67章保存本輪細節。
+
+
+## 四模組正式發行
+
+正式網站：[產科學習室](https://changyi123456.github.io/obstetric-learning/)。
+
+| 教學模組 | 練習入口 | 中文標示 QR 圖片 |
+| --- | --- | --- |
+| 胎位辨識 | [進入練習](https://changyi123456.github.io/obstetric-learning/?module=fetal-position) | [PNG](public/qr/01_胎位辨識.png) |
+| 分娩機轉 | [進入練習](https://changyi123456.github.io/obstetric-learning/?module=birth-mechanism) | [PNG](public/qr/02_分娩機轉.png) |
+| 胎心率情境觀察 | [進入練習](https://changyi123456.github.io/obstetric-learning/?module=fetal-heart-rate) | [PNG](public/qr/03_胎心率情境觀察.png) |
+| 四段觸診與胎心監測 | [進入練習](https://changyi123456.github.io/obstetric-learning/?module=palpation) | [PNG](public/qr/04_四段觸診與胎心監測.png) |
+
+原 Sites 網站保留。兩個網域的本機進度各自保存，不會自動轉移。QR 使用固定的 Pages 網址，更新內容時不用換圖；若改帳號、儲存庫或入口參數，再統一重建及換發。
+
+推送 `main` 後，GitHub Actions 使用 Node 22、`npm ci`、`npm test` 及 `npm run build -- --base=/obstetric-learning/`，再發布 `dist`。一般根目錄發布使用 `npm run build`。模型路徑由 `src/assets.ts` 跟隨 Vite base，避免子目錄 404。
+
+[完整規格 v1.1](specifications/產科四模組模擬教學_完整製作與階段驗收規格_v1.1.docx) 共70章，保留各階段完整要求；第68–70章新增整體檢查、GitHub Pages 與 QR 製作維護。[本次檢查紀錄](docs/final-validation.md)。
+
+重新產生 QR：安裝 Python Pillow 與 ReportLab，執行 `python scripts/build_qr_codes.py --font /path/to/NotoSansCJKtc-Bold.otf`。可指定 `--base-url` 與 `--output-dir`；名稱和完整網址保存在 `public/qr/links.json`。輸出黑白 PNG、M 錯誤更正、四模組安全區及下方中文名稱。交付前需解碼及以實際手機試掃。
+
+發布設定參考 [Vite 靜態部署](https://vite.dev/guide/static-deploy.html) 與 [GitHub Pages 自訂工作流程](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。

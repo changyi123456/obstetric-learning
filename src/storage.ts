@@ -13,9 +13,9 @@ export function nextQuestion(p: Progress): Progress {
   if (!p.submitted) return p;
   return p.index === p.round.length - 1 ? { ...p, complete: true } : { ...p, index: p.index + 1, submitted: null };
 }
-export function readProgress(storage: Pick<Storage,'getItem'> = localStorage): Progress {
+export function readProgress(storage?: Pick<Storage,'getItem'>): Progress {
   try {
-    const raw = storage.getItem(STORAGE_KEY); if (!raw) return newProgress();
+    const raw = (storage??localStorage).getItem(STORAGE_KEY); if (!raw) return newProgress();
     const p = JSON.parse(raw) as Progress;
     const poses = [...POSITIONS.map(x => x.code),'OA','OP'];
     if (p.version !== 1 || !['lesson','explore','quiz'].includes(p.mode) || !poses.includes(p.pose) || !Number.isInteger(p.lesson) || p.lesson < 0 || p.lesson > 2 || !Array.isArray(p.round) || !p.round.every(x => POSITIONS.some(y => y.code === x)) || !Number.isInteger(p.index) || p.index < 0 || p.index > 5 || !Array.isArray(p.visited) || !Array.isArray(p.attempts) || !p.attempts.every(a=>a && typeof a.correct === 'boolean' && typeof a.id === 'string' && POSITIONS.some(y=>y.code===a.expected) && POSITIONS.some(y=>y.code===a.answer)) || (p.mode === 'quiz' && p.round.length !== 6)) return newProgress();
