@@ -1,6 +1,6 @@
 # 產科學習室
 
-第一階段胎位辨識試教版。獨立於既有 `birth-sim-web`，包含示範教學、六種枕位探索、OA／OP 補充、六題自我測驗、方向解說、重試、裝置內進度保存與摘要下載。其他三個模組目前顯示後續製作。
+胎位辨識與分娩機轉試教版。獨立於既有 `birth-sim-web`，提供胎位探索與自我測驗，以及分娩機轉的連續示範、七段操作及順序練習。包含回饋、重試、裝置內進度保存與摘要下載。胎心率、觸診與監測為後續製作。
 
 ## 開發與驗證
 
@@ -11,7 +11,7 @@ npm test
 npm run build
 ```
 
-本機使用 `http://127.0.0.1:5178/`。獨立入口為 `?module=fetal-position`；模組總覽為 `?module=all`。進度只存在當前瀏覽器、當前網站來源的 localStorage，不收集姓名或學號。
+本機使用 `http://127.0.0.1:5178/`。獨立入口為 `?module=fetal-position` 與 `?module=birth-mechanism`；模組總覽為 `?module=all`。進度只存在當前瀏覽器、當前網站來源的 localStorage，不收集姓名或學號。
 
 ## 模型來源與選用理由
 
@@ -53,3 +53,24 @@ blender --background --python scripts/inspect_face.py -- /absolute/path/obstetri
 待階段驗收：使用者逐一核對六胎位與教學文字；iPhone Safari、Android Chrome、iPad Safari 真實裝置手勢與效能；教師實際試教。電腦視窗測試不替代實機驗收。
 
 後續依原規格逐關完成分娩機轉、胎心率、觸診與監測。共用本網站入口、儲存和互動元件，不與現有產房模擬聯動。
+
+## 分娩機轉（M3）
+
+重新調查 GitHub 分娩模擬專案，檢視指定 commit 與資產授權，未找到可直接用於本次七段教學的完整資產。候選、版本、採用理由及教學文獻保存於 `docs/birth-resource-audit.json`。骨盆沿用已接受的 HRA 女性骨盆，胎兒骨架與動畫以 Blender 自製。
+
+`src/birth-poses.json` 是版本化動作來源；Blender 烘焙為 42 秒的 `Birth_Sequence`，連續示範與分段操作共用它。`assets-source/birth-mechanism-rig.blend` 保留可編輯骨架，`public/models/birth-fetus.glb` 為分娩專用資產，不覆寫胎位模組。
+
+```sh
+blender --background --python scripts/build_birth_rig.py -- /absolute/path/obstetric-learning
+blender --background --python scripts/inspect_birth.py -- /absolute/path/obstetric-learning /absolute/path/review-output --all-frames --no-render --strict
+```
+
+頭頸採漸變權重，頭與手分開綁定。動畫只供單一 LOA 教學示意，不提供真實尺寸、產程預測、接生拉力、軟組織或接觸力學模擬。幾何檢查只能排查既定動畫的穿模，不能視為臨床驗證。模型比率與位移均為正規化示意值。
+
+操作紀錄使用獨立 `obstetric-learning.birth.v1`，保存各段完成、首次結果、重試、提示及排序紀錄，可下載 JSON 摘要。觀看動畫不計入操作完成；清除本模組不影響胎位紀錄。QR code 依最新指示延後統一製作。
+
+完整製作規格以 `scripts/build_spec.py` 產生於工作區 `output/`，保留原四模組全階段，新增 M3 的資源、Blender、逐段互動、保存及驗收細項。
+
+2026-10-15 依第七段穿骨回報修正分娩專用比例與路徑。先沿通道下降，身體通過後再向前移；一併修正內轉與外轉過渡。全程 0–1260 影格的頭、頸及軀幹表面與八個骨盆組件相交數皆為零。檢查方法、範圍及輸入 SHA-256 保存在 `docs/birth-geometry-review.json`；並非接觸力學或臨床驗證。
+
+分娩模組已檢查七段操作、兩段控制先後、錯答重試、排序錯誤與正確、首次結果、下載、續作、減少動態及清除隔離；桌面與 390×844 手機視窗。連同胎位模組 13 項自動測試通過，真實行動裝置與醫學內容仍按規格逐段驗收。

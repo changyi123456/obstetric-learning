@@ -1,0 +1,22 @@
+{
+  "checked": "2026-10-15",
+  "policy": "先調查網路與 GitHub，核對資產與授權；不符合者以 Blender 自製。",
+  "github_queries": ["childbirth simulation", "birth simulator", "fetus pelvis", "childbirth 3d"],
+  "candidates": [
+    {"repository": "ZelimDamian/ChildBirth", "commit": "c6b36848d374d3a1d8b3fb40ad9152f1c0607c40", "finding": "含 Baby.obj；所檢視版本未提供可支持模型改編與公開發布的明確授權。", "adopted": false},
+    {"repository": "ritamoura96/ML_Morphing", "commit": "f39ca68e53628c9cfa42c3936263b192ea4b4e6c", "finding": "FEM／機器學習研究內容，未取得符合本次互動與授權條件的完整教學動畫資產。", "adopted": false},
+    {"repository": "Harshith-H-K/ChildBirthTrivia", "commit": "2cbfb371f67cf578bb358d297695b6b7ebd562ab", "finding": "Unity 問答專案，未取得本次所需的明確授權骨架動畫。", "adopted": false}
+  ],
+  "assets": {
+    "pelvis": {"doi": "10.48539/HBM352.BTSQ.586", "license": "CC BY 4.0", "geometry": "HRA 女性 v1.5 的八個骨組件；沿用已接受模型，未作非等比例變形。"},
+    "fetus": "以既有 Blender 自製造型建立分娩專用頭、頸與軀幹骨架；胎位辨識原模型不變。"
+  },
+  "teaching_sources": [
+    {"url": "https://assets.cambridge.org/97811071/58047/excerpt/9781107158047_excerpt.pdf", "use": "Normal Labor、cardinal movements，核對分娩機轉。"},
+    {"url": "https://www.aafp.org/afp/2008/1015/p953", "use": "雙頂徑通過入口與 station 0 的差異。"},
+    {"url": "https://www.msdmanuals.com/professional/multimedia/video/how-to-do-spontaneous-vaginal-delivery", "use": "復位、肩部轉向與肩部娩出關係；未移用影像。"}
+  ],
+  "provided_reference": ["參考資料/3.分娩機轉動態圖.docx", "參考資料/3.分娩機轉.pdf"],
+  "video": "需求中的 YouTube 影片未複製、未移用，不能視為已取得模型授權。",
+  "status": "單一 LOA 教學示意；使用者本人仍負責逐段醫學內容定稿。"
+}

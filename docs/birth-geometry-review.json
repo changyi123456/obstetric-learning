@@ -1,0 +1,22 @@
+{
+  "checked": "2026-10-15",
+  "motionVersion": "birth-motion-2",
+  "method": "Blender evaluated mesh BVH surface intersection test at every baked frame; not a clinical biomechanics validation.",
+  "fps": 30,
+  "durationSeconds": 42,
+  "checkedFrames": 1261,
+  "intersectingFrames": 0,
+  "fetalTargets": [
+    "Birth_head_surface",
+    "Birth_body_surface",
+    "Neck"
+  ],
+  "pelvisComponents": 8,
+  "scale": 0.65,
+  "sha256": {
+    "src/birth-poses.json": "dab074db7750d95d472c777bef9fc430274b0d86ad548f0d615bb3572d45a7c4",
+    "public/models/birth-fetus.glb": "c5aa334d60645df8801b06ac5caaba79267b192ebd79b98dfcc551f651452cf3",
+    "public/models/pelvis.glb": "2dfd4fcb7ec6e9ef0a205fe2921c24fab5d648ce059668f3ca514d3f850a6b37",
+    "assets-source/birth-mechanism-rig.blend": "b8f515c8b9a860ca66b2fc6214ccebb2b050aaaf9a81f33860b04d5dca0df066"
+  }
+}

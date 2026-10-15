@@ -1,0 +1,222 @@
+{
+  "version": "birth-motion-2",
+  "secondsPerStage": 6,
+  "fps": 30,
+  "scale": 0.65,
+  "neckPivot": [
+    0,
+    0.68,
+    0.06
+  ],
+  "note": "Normalized illustrative coordinates and angles for a single LOA teaching path; not clinical measurements.",
+  "keyframes": [
+    {
+      "time": 0,
+      "position": [
+        0,
+        0.85,
+        0.28
+      ],
+      "bodyYaw": 45,
+      "headYaw": 0,
+      "headPitch": 0,
+      "bodyTilt": 0,
+      "bodyRoll": 0
+    },
+    {
+      "time": 1,
+      "position": [
+        0,
+        0.4,
+        0.4
+      ],
+      "bodyYaw": 45,
+      "headYaw": 0,
+      "headPitch": 0,
+      "bodyTilt": 10,
+      "bodyRoll": 0
+    },
+    {
+      "time": 2,
+      "position": [
+        0,
+        0.05,
+        0.28
+      ],
+      "bodyYaw": 45,
+      "headYaw": 0,
+      "headPitch": 0,
+      "bodyTilt": 20,
+      "bodyRoll": 0
+    },
+    {
+      "time": 3,
+      "position": [
+        0,
+        -0.1,
+        0.19
+      ],
+      "bodyYaw": 45,
+      "headYaw": 0,
+      "headPitch": 25,
+      "bodyTilt": 25,
+      "bodyRoll": 0
+    },
+    {
+      "time": 3.5,
+      "position": [
+        0,
+        -0.45,
+        0.14
+      ],
+      "bodyYaw": 45,
+      "headYaw": -22.5,
+      "headPitch": 25,
+      "bodyTilt": 22.5,
+      "bodyRoll": 0
+    },
+    {
+      "time": 3.75,
+      "position": [
+        0,
+        -0.69,
+        -0.02
+      ],
+      "bodyYaw": 45,
+      "headYaw": -37.97,
+      "headPitch": 25,
+      "bodyTilt": 21,
+      "bodyRoll": 0
+    },
+    {
+      "time": 4,
+      "position": [
+        0,
+        -0.8,
+        -0.1
+      ],
+      "bodyYaw": 45,
+      "headYaw": -45,
+      "headPitch": 25,
+      "bodyTilt": 20,
+      "bodyRoll": 0
+    },
+    {
+      "time": 4.5,
+      "position": [
+        0,
+        -1.14,
+        -0.12
+      ],
+      "bodyYaw": 45,
+      "headYaw": -45,
+      "headPitch": -20,
+      "bodyTilt": 10,
+      "bodyRoll": 0
+    },
+    {
+      "time": 5,
+      "position": [
+        0,
+        -1.41,
+        -0.08
+      ],
+      "bodyYaw": 45,
+      "headYaw": -45,
+      "headPitch": -65,
+      "bodyTilt": 0,
+      "bodyRoll": 0
+    },
+    {
+      "time": 5.5,
+      "position": [
+        0,
+        -1.41,
+        -0.08
+      ],
+      "bodyYaw": 45,
+      "headYaw": 0,
+      "headPitch": -65,
+      "bodyTilt": 0,
+      "bodyRoll": 0
+    },
+    {
+      "time": 5.625,
+      "position": [
+        0,
+        -1.41,
+        -0.13
+      ],
+      "bodyYaw": 52.03125,
+      "headYaw": 0,
+      "headPitch": -65,
+      "bodyTilt": 0,
+      "bodyRoll": 0
+    },
+    {
+      "time": 6,
+      "position": [
+        0,
+        -1.41,
+        -0.2
+      ],
+      "bodyYaw": 90,
+      "headYaw": 0,
+      "headPitch": -65,
+      "bodyTilt": 0,
+      "bodyRoll": 0
+    },
+    {
+      "time": 6.35,
+      "position": [
+        0,
+        -1.67,
+        -0.36
+      ],
+      "bodyYaw": 90,
+      "headYaw": 0,
+      "headPitch": -55,
+      "bodyTilt": 0,
+      "bodyRoll": 12
+    },
+    {
+      "time": 6.65,
+      "position": [
+        0,
+        -1.95,
+        -0.25
+      ],
+      "bodyYaw": 90,
+      "headYaw": 0,
+      "headPitch": -35,
+      "bodyTilt": 0,
+      "bodyRoll": -12
+    },
+    {
+      "time": 6.85,
+      "position": [
+        0,
+        -2.2,
+        -0.18
+      ],
+      "bodyYaw": 90,
+      "headYaw": 0,
+      "headPitch": -20,
+      "bodyTilt": 0,
+      "bodyRoll": 0
+    },
+    {
+      "time": 7,
+      "position": [
+        0,
+        -2.6,
+        0.4
+      ],
+      "bodyYaw": 90,
+      "headYaw": 0,
+      "headPitch": -10,
+      "bodyTilt": 15,
+      "bodyRoll": 0
+    }
+  ]
+}

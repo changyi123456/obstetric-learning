@@ -2,8 +2,9 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { ArrowRight, ArrowLeft, Check, CheckCircle2, CircleHelp, RotateCcw, Trash2, X, BookOpen, Download, Home, Expand, Compass } from 'lucide-react';
 import { POSITIONS, LESSONS, getPosition, validateAnswer, explainAnswer, type PoseCode, type LearningMode } from './positions';
 import { STORAGE_KEY, readProgress, newProgress, beginRound, submitAttempt, nextQuestion } from './storage';
+const BirthModule=lazy(()=>import('./BirthModule'));
 const AnatomyViewer=lazy(()=>import('./AnatomyViewer'));
-const MODULES=[{id:'fetal-position',name:'胎位辨識',subtitle:'理解方向與六種枕位',available:true},{id:'birth-mechanism',name:'分娩機轉',subtitle:'七階段的空間與動作',available:false},{id:'fetal-heart-rate',name:'胎心率',subtitle:'觀察曲線與時間關係',available:false},{id:'palpation',name:'觸診與監測',subtitle:'四段觸診與探頭操作',available:false}];
+const MODULES=[{id:'fetal-position',name:'胎位辨識',subtitle:'理解方向與六種枕位',available:true},{id:'birth-mechanism',name:'分娩機轉',subtitle:'七階段的空間與動作',available:true},{id:'fetal-heart-rate',name:'胎心率',subtitle:'觀察曲線與時間關係',available:false},{id:'palpation',name:'觸診與監測',subtitle:'四段觸診與探頭操作',available:false}];
 const query=new URLSearchParams(location.search);
 const initialModule=query.get('module') ?? 'fetal-position';
 
@@ -21,7 +22,9 @@ export default function App(){
   const [savingError,setSavingError]=useState(false);
   const [dialog,setDialog]=useState<'clear'|'credits'|null>(null);
   const [showHome,setShowHome]=useState(initialModule==='all'||!MODULES.some(m=>m.id===initialModule));
+  const [activeModule,setActiveModule]=useState(initialModule);
   const [pendingModule,setPendingModule]=useState<string|null>(MODULES.some(m=>m.id===initialModule&&!m.available)?initialModule:null);
+  useEffect(()=>{document.title=`${MODULES.find(m=>m.id===activeModule)?.name??'教學模組'}｜產科學習室`;},[activeModule]);
   const [storageReady,setStorageReady]=useState(false);
   const [modelReady,setModelReady]=useState(false);
   const dialogRef=useRef<HTMLDialogElement>(null);
@@ -40,13 +43,13 @@ export default function App(){
   function selectPose(next:PoseCode){setProgress(p=>({...p,pose:next,visited:p.visited.includes(next)?p.visited:[...p.visited,next]}));}
   function submit(e:React.FormEvent){e.preventDefault();if(progress.submitted)return;const value=validateAnswer(answer);if(!value){setInputError('請填寫有效的三字母枕位代號，例如 LOA。OA、OP 是補充內容。');return;}setInputError('');setProgress(p=>submitAttempt(p,value));}
   function next(){setAnswer('');setInputError('');setProgress(nextQuestion);}
-  function navigateModule(id:string){const url=new URL(location.href);url.searchParams.set('module',id);history.replaceState(null,'',url);setShowHome(id==='all');setPendingModule(id!=='all'&&id!=='fetal-position'?id:null);}
+  function navigateModule(id:string){setActiveModule(id);const url=new URL(location.href);url.searchParams.set('module',id);history.replaceState(null,'',url);setShowHome(id==='all');setPendingModule(id!=='all'&&!MODULES.some(m=>m.id===id&&m.available)?id:null);}
   function clear(){try{localStorage.removeItem(STORAGE_KEY);setProgress(newProgress());setAnswer('');setInputError('');setDialog(null);}catch{setSavingError(true);setDialog(null);}}
   function downloadSummary(){const data={title:'胎位辨識練習摘要',exportedAt:new Date().toISOString(),lessonCompleted:progress.lessonCompleted,visited:progress.visited,attempts:progress.attempts};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='胎位辨識練習摘要.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 
   return <>
-    <header className="site-header"><a className="brand" href="?module=all" onClick={e=>{e.preventDefault();navigateModule('all');}}><span className="brand-line"/>產科學習室</a><nav aria-label="教學模組">{MODULES.map(m=><button className={!showHome&&(pendingModule??'fetal-position')===m.id?'active':''} key={m.id} onClick={()=>navigateModule(m.id)}>{m.name}{!m.available&&<span className="sr-only">，後續製作</span>}</button>)}</nav><button className="icon-button home-button" aria-label="所有模組" onClick={()=>navigateModule('all')}><Home size={19}/></button></header>
-    {showHome||pendingModule?<main className="module-index"><div className="index-heading"><h1>{pendingModule?MODULES.find(m=>m.id===pendingModule)?.name:'選擇學習主題'}</h1><p>{pendingModule?'這個模組將於後續階段製作。你現在可以先練習胎位辨識。':'從空間方向到監測判讀，依照自己的步調逐步練習。'}</p></div><div className="module-list">{MODULES.map((m,i)=><a key={m.id} href={`?module=${m.id}`} className={!m.available?'module-row future':'module-row'} onClick={e=>{e.preventDefault();navigateModule(m.id);}}><span className="module-number">0{i+1}</span><div><h2>{m.name}</h2><p>{m.subtitle}</p></div><span>{m.available?'開始學習':'後續製作'}</span><ArrowRight size={20}/></a>)}</div><p className="index-note">第一階段 · 胎位辨識教學試用版</p></main>:<main className="learning-app">
+    <header className="site-header"><a className="brand" href="?module=all" onClick={e=>{e.preventDefault();navigateModule('all');}}><span className="brand-line"/>產科學習室</a><nav aria-label="教學模組">{MODULES.map(m=><button className={!showHome&&activeModule===m.id?'active':''} key={m.id} onClick={()=>navigateModule(m.id)}>{m.name}{!m.available&&<span className="sr-only">，後續製作</span>}</button>)}</nav><button className="icon-button home-button" aria-label="所有模組" onClick={()=>navigateModule('all')}><Home size={19}/></button></header>
+    {showHome||pendingModule?<main className="module-index"><div className="index-heading"><h1>{pendingModule?MODULES.find(m=>m.id===pendingModule)?.name:'選擇學習主題'}</h1><p>{pendingModule?'這個模組將於後續階段製作。你現在可以先練習胎位辨識。':'從空間方向到監測判讀，依照自己的步調逐步練習。'}</p></div><div className="module-list">{MODULES.map((m,i)=><a key={m.id} href={`?module=${m.id}`} className={!m.available?'module-row future':'module-row'} onClick={e=>{e.preventDefault();navigateModule(m.id);}}><span className="module-number">0{i+1}</span><div><h2>{m.name}</h2><p>{m.subtitle}</p></div><span>{m.available?'開始學習':'後續製作'}</span><ArrowRight size={20}/></a>)}</div><p className="index-note">胎位辨識與分娩機轉 · 教學試用版</p></main>:activeModule==='birth-mechanism'?<Suspense fallback={<main className="learning-app">正在準備分娩機轉教學…</main>}><BirthModule onCredits={()=>setDialog('credits')}/></Suspense>:<main className="learning-app">
       <div className="page-heading"><div><h1>胎位辨識</h1><p>轉動視角，理解胎兒與骨盆的方向關係。</p></div><button className="text-button" onClick={()=>setDialog('clear')}><Trash2 size={15}/>清除紀錄</button></div>
       <div className="learning-grid">
         <section className="visual-column" aria-label="胎位互動教學">
@@ -63,7 +66,7 @@ export default function App(){
         </aside>
       </div>
     </main>}
-    <footer className="site-footer"><span>產科學習室 · 第一階段教學試用版</span><button onClick={()=>setDialog('credits')}>素材來源</button><span>不收集姓名與學號</span></footer>
-    <dialog ref={dialogRef} onCancel={()=>setDialog(null)} onClick={e=>{if(e.target===e.currentTarget)setDialog(null);}}><div className="dialog-content"><button className="dialog-close icon-button" aria-label="關閉視窗" onClick={()=>setDialog(null)}><X size={21}/></button>{dialog==='clear'?<><h2>清除此裝置的練習紀錄？</h2><p>會刪除胎位辨識的教學進度、答題結果與重試紀錄。其他裝置的資料不受影響。</p><div className="dialog-actions"><button className="secondary" onClick={()=>setDialog(null)}>保留紀錄</button><button className="danger" onClick={clear}>確定清除</button></div></>:<><h2>模型來源與授權</h2><p><b>骨盆模型</b><br/>改編自 Human Reference Atlas 的女性解剖模型 v1.5，作者 Kristen Browne 與 Heidi Schlehlein（2023）。依 CC BY 4.0 授權，擷取八個骨盆組件並調整方向、比例、表面與材質。</p><a href="https://doi.org/10.48539/HBM352.BTSQ.586" target="_blank" rel="noreferrer">查看女性解剖模型原始資料 ↗</a><p><b>胎兒模型</b><br/>本專案以 Blender 製作的教學示意模型，可編輯來源隨專案保存；用於方向與枕位觀察，待內容定稿者核對。</p><p><b>六種胎位依據</b><br/>依提供的「胎位的變化」教學圖例，採母體左右與枕部方向為基準。</p><a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" target="_blank" rel="noreferrer">閱讀骨盆模型授權全文 ↗</a><button className="primary full" onClick={()=>setDialog(null)}>回到學習</button></>}</div></dialog>
+    <footer className="site-footer"><span>產科學習室 · 教學試用版</span><button onClick={()=>setDialog('credits')}>素材來源</button><span>不收集姓名與學號</span></footer>
+    <dialog ref={dialogRef} onCancel={()=>setDialog(null)} onClick={e=>{if(e.target===e.currentTarget)setDialog(null);}}><div className="dialog-content"><button className="dialog-close icon-button" aria-label="關閉視窗" onClick={()=>setDialog(null)}><X size={21}/></button>{dialog==='clear'?<><h2>清除此裝置的練習紀錄？</h2><p>會刪除胎位辨識的教學進度、答題結果與重試紀錄。其他裝置的資料不受影響。</p><div className="dialog-actions"><button className="secondary" onClick={()=>setDialog(null)}>保留紀錄</button><button className="danger" onClick={clear}>確定清除</button></div></>:<><h2>模型來源與授權</h2><p><b>骨盆模型</b><br/>改編自 Human Reference Atlas 的女性解剖模型 v1.5，作者 Kristen Browne 與 Heidi Schlehlein（2023）。依 CC BY 4.0 授權，擷取八個骨盆組件並調整方向、比例、表面與材質。</p><a href="https://doi.org/10.48539/HBM352.BTSQ.586" target="_blank" rel="noreferrer">查看女性解剖模型原始資料 ↗</a><p><b>胎兒模型</b><br/>本專案以 Blender 製作的教學示意模型；分娩機轉另有頭、頸、軀幹骨架及連續動畫，可編輯來源隨專案保存。模型動作為單一路徑示範，角度、距離與時間不作臨床量測，待內容定稿者核對。</p><p><b>分娩機轉依據</b><br/>依提供的七步驟需求與分娩機轉教材，採下降、固定、屈曲、內轉、伸展、復位／外轉、娩出。以 LOA 示範，復位與外轉分兩段；真實機轉彼此重疊。</p><a href="https://assets.cambridge.org/97811071/58047/excerpt/9781107158047_excerpt.pdf" target="_blank" rel="noreferrer">正常分娩機轉參考資料 ↗</a><p><b>六種胎位依據</b><br/>依提供的「胎位的變化」教學圖例，採母體左右與枕部方向為基準。</p><a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" target="_blank" rel="noreferrer">閱讀骨盆模型授權全文 ↗</a><button className="primary full" onClick={()=>setDialog(null)}>回到學習</button></>}</div></dialog>
   </>;
 }
