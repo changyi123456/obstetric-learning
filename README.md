@@ -1,6 +1,6 @@
 # 產科學習室
 
-四模組產科教學試用版，獨立於既有 `birth-sim-web`。提供胎位探索與自我測驗、分娩機轉七段直接操作、胎心率曲線與動態床邊情境，以及四段觸診與通用胎心監視器操作。各模組分別保存本機進度、回饋及摘要。
+三模組產科教學試用版，獨立於既有 `birth-sim-web`。提供胎位探索與自我測驗、分娩機轉七段直接操作、胎心率曲線與動態床邊情境。各模組分別保存本機進度、回饋及摘要。2026-11-02 依使用者指示撤下四段觸診與胎心監測模組，製作資料封存於本機，Git 歷史保留。
 
 ## 開發與驗證
 
@@ -11,7 +11,7 @@ npm test
 npm run build
 ```
 
-本機使用 `http://127.0.0.1:5178/`。獨立入口為 `?module=fetal-position`、`?module=birth-mechanism`、`?module=fetal-heart-rate` 與 `?module=palpation`；模組總覽為 `?module=all`。進度只存在當前瀏覽器、當前網站來源的 localStorage，不收集真實姓名或學號；M1 核對手環使用虛構資料。
+本機使用 `http://127.0.0.1:5178/`。獨立入口為 `?module=fetal-position`、`?module=birth-mechanism` 與 `?module=fetal-heart-rate`；模組總覽為 `?module=all`。進度只存在當前瀏覽器、當前網站來源的 localStorage，不收集真實姓名或學號。
 
 ## 模型來源與選用理由
 
@@ -52,7 +52,7 @@ blender --background --python scripts/inspect_face.py -- /absolute/path/obstetri
 
 待階段驗收：使用者逐一核對六胎位與教學文字；iPhone Safari、Android Chrome、iPad Safari 真實裝置手勢與效能；教師實際試教。電腦視窗測試不替代實機驗收。
 
-後續依原規格逐關完成分娩機轉、胎心率、觸診與監測。共用本網站入口、儲存和互動元件，不與現有產房模擬聯動。
+本次發行僅包含胎位、分娩機轉與胎心率，共用網站入口與互動元件，不與現有產房模擬聯動。
 
 ## 分娩機轉（M3）
 
@@ -102,20 +102,7 @@ Pointer Events 支援滑鼠及觸控，抓取採指標捕捉，取消、失焦�
 
 床邊情境使用獨立 obstetric-learning.fhr-room.v1 儲存，不覆寫原曲線、胎位或分娩機轉資料。完整規格 v0.8 五十章五十頁，第四十三至五十章詳列新流程、模型、同步、互動、保存與驗收。醫學數字、語句、容差與真實觸控仍待使用者試教驗收。本階段當時延後 QR code；統一發行見下方。
 
-## 四段觸診與胎心監測（M1，v0.9）
-
-入口 `?module=palpation`。先查 GitHub／原教材及授權，再以 Blender 補製獨立孕腹、四組雙手、覆巾、兩探頭和兩固定帶。沿用 MakeHuman core CC0 掌指拓樸，未改動 M2 模型。來源、資產大小、節點 API 與雜湊見 `docs/palpation-room-provenance.json`；資源查核與畫面核對見 `docs/palpation-design.md`。
-
-流程包含八項床邊準備、四段直接拖曳及判斷、用物與接線、雙帶、TOCO 與 FHR 尋訊、母體脈搏、舒適度、放鬆時歸零、教學記錄、觀察停止及八項收尾。前三段面向頭端，第四段面向腳端；第二段兩側分開完成。示範不計入操作。探頭帶動自己的固定帶貼合腹面；通用面板和床上螢幕同步，提供主動開啟的原創合成心音。
-
-資料鍵為 `obstetric-learning.palpation.v1`，換案或重練需確認，只影響 M1；恢復進度不自動啟動記錄。網頁進度與觸感文字不等於實體技能考核或臨床診斷。一般面板可後續替換指定機型，實際時長與設定依校內 SOP。完整規格 v0.9 保留全部六十章與分階段驗收；本階段當時延後 QR code；統一發行見下方。
-
-### 監測與收尾物件操作
-
-M1 監測改為直接連接接頭、開凝膠瓶、移動探頭、拉動兩條帶尾及操作監視器；收尾實際解扣、返回、擦拭和拉回被單。側欄依物件狀態自動記錄進度。點選拿取／目的地和鍵盤替代共用相同條件。床簾在隱私準備時沿U形軌道實際閉合；相機保持簾內。新增器材為Blender原創，來源查核與QA見 `docs/palpation-design.md`。完整規格v1.0的第61–67章保存本輪細節。
-
-
-## 四模組正式發行
+## 三模組正式發行 2026 年 11 月 2 日
 
 正式網站：[產科學習室](https://changyi123456.github.io/obstetric-learning/)。
 
@@ -124,14 +111,15 @@ M1 監測改為直接連接接頭、開凝膠瓶、移動探頭、拉動兩條�
 | 胎位辨識 | [進入練習](https://changyi123456.github.io/obstetric-learning/?module=fetal-position) | [PNG](public/qr/01_胎位辨識.png) |
 | 分娩機轉 | [進入練習](https://changyi123456.github.io/obstetric-learning/?module=birth-mechanism) | [PNG](public/qr/02_分娩機轉.png) |
 | 胎心率情境觀察 | [進入練習](https://changyi123456.github.io/obstetric-learning/?module=fetal-heart-rate) | [PNG](public/qr/03_胎心率情境觀察.png) |
-| 四段觸診與胎心監測 | [進入練習](https://changyi123456.github.io/obstetric-learning/?module=palpation) | [PNG](public/qr/04_四段觸診與胎心監測.png) |
 
-原 Sites 網站保留。兩個網域的本機進度各自保存，不會自動轉移。QR 使用固定的 Pages 網址，更新內容時不用換圖；若改帳號、儲存庫或入口參數，再統一重建及換發。
+本次僅更新 GitHub Pages。原 Sites 網站維持先前版本。兩個網域的本機進度各自保存，不會自動轉移。QR 使用固定的 Pages 網址，更新內容時不用換圖；若改帳號、儲存庫或入口參數，再統一重建及換發。
 
 推送 `main` 後，GitHub Actions 使用 Node 22、`npm ci`、`npm test` 及 `npm run build -- --base=/obstetric-learning/`，再發布 `dist`。一般根目錄發布使用 `npm run build`。模型路徑由 `src/assets.ts` 跟隨 Vite base，避免子目錄 404。
 
-[完整規格 v1.1](specifications/產科四模組模擬教學_完整製作與階段驗收規格_v1.1.docx) 共70章，保留各階段完整要求；第68–70章新增整體檢查、GitHub Pages 與 QR 製作維護。[本次檢查紀錄](docs/final-validation.md)。
+[目前發行變更規格 v1.2](specifications/產科三模組正式發行_變更與驗收規格_v1.2.docx) 說明移除範圍、三個入口、舊連結處理、資料保存與 QR 交付流程。[歷版完整製作規格 v1.1](specifications/產科四模組模擬教學_完整製作與階段驗收規格_v1.1.docx) 保留全部70章作為歷史階段記錄；其中四段觸診不再適用於目前公開版本。[先前四模組檢查紀錄](docs/final-validation.md)。
 
-重新產生 QR：安裝 Python Pillow 與 ReportLab，執行 `python scripts/build_qr_codes.py --font /path/to/NotoSansCJKtc-Bold.otf`。可指定 `--base-url` 與 `--output-dir`；名稱和完整網址保存在 `public/qr/links.json`。輸出黑白 PNG、M 錯誤更正、四模組安全區及下方中文名稱。交付前需解碼及以實際手機試掃。
+重新產生 QR：安裝 Python Pillow 與 ReportLab，執行 `python scripts/build_qr_codes.py --font /path/to/NotoSansCJKtc-Bold.otf`。可指定 `--base-url` 與 `--output-dir`；公開模組與 QR 名稱共用 `src/modules.json`，完整網址保存在 `public/qr/links.json`。輸出黑白 PNG、M 錯誤更正、四個 QR 小方格寬的安全區及下方中文名稱。交付前需解碼及以實際手機試掃。
 
 發布設定參考 [Vite 靜態部署](https://vite.dev/guide/static-deploy.html) 與 [GitHub Pages 自訂工作流程](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。
+
+目前導覽與發行包只含三個模組。舊 `?module=palpation` 和未知模組網址會改為 `?module=all`，不會載入觸診頁面；不刪除使用者瀏覽器中既有學習紀錄。公開資產不再包含 palpation-room.glb 或第四張 QR。

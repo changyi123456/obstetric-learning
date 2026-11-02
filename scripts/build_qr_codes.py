@@ -8,12 +8,7 @@ from urllib.parse import urlsplit
 from PIL import Image, ImageDraw, ImageFont, PngImagePlugin
 from reportlab.graphics.barcode.qrencoder import QRCode, QRErrorCorrectLevel
 
-MODULES = [
-    ('01_胎位辨識', '胎位辨識', 'fetal-position'),
-    ('02_分娩機轉', '分娩機轉', 'birth-mechanism'),
-    ('03_胎心率情境觀察', '胎心率情境觀察', 'fetal-heart-rate'),
-    ('04_四段觸診與胎心監測', '四段觸診與胎心監測', 'palpation'),
-]
+MODULES = json.loads((Path(__file__).resolve().parents[1] / 'src' / 'modules.json').read_text())
 
 def main():
     parser = argparse.ArgumentParser()
@@ -26,7 +21,7 @@ def main():
     if parsed.scheme != 'https' or not parsed.netloc or parsed.query or parsed.fragment:
         parser.error('--base-url must be an HTTPS site directory without a query or fragment')
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    links = [{ 'name': name, 'module': module, 'file': stem + '.png', 'url': base + '?module=' + module } for stem, name, module in MODULES]
+    links = [{ 'name': module['qrName'], 'module': module['id'], 'file': module['qrFile'], 'url': base + '?module=' + module['id'] } for module in MODULES]
     codes = []
     for entry in links:
         qr = QRCode(None, QRErrorCorrectLevel.M)

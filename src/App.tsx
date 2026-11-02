@@ -2,13 +2,13 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { ArrowRight, ArrowLeft, Check, CheckCircle2, CircleHelp, RotateCcw, Trash2, X, BookOpen, Download, Home, Expand, Compass } from 'lucide-react';
 import { POSITIONS, LESSONS, getPosition, validateAnswer, explainAnswer, type PoseCode, type LearningMode } from './positions';
 import { STORAGE_KEY, readProgress, newProgress, beginRound, submitAttempt, nextQuestion } from './storage';
+import { MODULES, resolveModule } from './modules';
 const FhrModule=lazy(()=>import('./FhrExperience'));
-const PalpationModule=lazy(()=>import('./PalpationModule'));
 const BirthModule=lazy(()=>import('./BirthModule'));
 const AnatomyViewer=lazy(()=>import('./AnatomyViewer'));
-const MODULES=[{id:'fetal-position',name:'胎位辨識',subtitle:'理解方向與六種枕位',available:true},{id:'birth-mechanism',name:'分娩機轉',subtitle:'七階段的空間與動作',available:true},{id:'fetal-heart-rate',name:'胎心率',subtitle:'觀察曲線與時間關係',available:true},{id:'palpation',name:'觸診與監測',subtitle:'四段觸診與探頭操作',available:true}];
 const query=new URLSearchParams(location.search);
-const initialModule=query.get('module') ?? 'fetal-position';
+const requestedModule=query.get('module');
+const initialModule=resolveModule(requestedModule);
 
 function LetterBreakdown({pose}:{pose:PoseCode}) {
   const p=getPosition(pose);
@@ -16,6 +16,7 @@ function LetterBreakdown({pose}:{pose:PoseCode}) {
 }
 
 export default function App(){
+  useEffect(()=>{if(requestedModule!==null&&requestedModule!==initialModule){const url=new URL(location.href);url.searchParams.set('module',initialModule);history.replaceState(null,'',url);}},[]);
   const [progress,setProgress]=useState(readProgress);
   const [opacity,setOpacity]=useState(.7);
   const [labels,setLabels]=useState(true);
@@ -51,7 +52,7 @@ export default function App(){
 
   return <>
     <header className="site-header"><a className="brand" href="?module=all" onClick={e=>{e.preventDefault();navigateModule('all');}}><span className="brand-line"/>產科學習室</a><nav aria-label="教學模組">{MODULES.map(m=><button className={!showHome&&activeModule===m.id?'active':''} key={m.id} onClick={()=>navigateModule(m.id)}>{m.name}{!m.available&&<span className="sr-only">，後續製作</span>}</button>)}</nav><button className="icon-button home-button" aria-label="所有模組" onClick={()=>navigateModule('all')}><Home size={19}/></button></header>
-    {showHome||pendingModule?<main className="module-index"><div className="index-heading"><h1>{pendingModule?MODULES.find(m=>m.id===pendingModule)?.name:'選擇學習主題'}</h1><p>{pendingModule?'這個模組將於後續階段製作。你現在可以先練習胎位辨識。':'從空間方向到監測判讀，依照自己的步調逐步練習。'}</p></div><div className="module-list">{MODULES.map((m,i)=><a key={m.id} href={`?module=${m.id}`} className={!m.available?'module-row future':'module-row'} onClick={e=>{e.preventDefault();navigateModule(m.id);}}><span className="module-number">0{i+1}</span><div><h2>{m.name}</h2><p>{m.subtitle}</p></div><span>{m.available?'開始學習':'後續製作'}</span><ArrowRight size={20}/></a>)}</div><p className="index-note">四個產科技能模組 · 教學試用版</p></main>:activeModule==='palpation'?<Suspense fallback={<main className="learning-app">正在準備床邊觸診教學…</main>}><PalpationModule/></Suspense>:activeModule==='fetal-heart-rate'?<Suspense fallback={<main className="learning-app">正在準備胎心率教學…</main>}><FhrModule/></Suspense>:activeModule==='birth-mechanism'?<Suspense fallback={<main className="learning-app">正在準備分娩機轉教學…</main>}><BirthModule onCredits={()=>setDialog('credits')}/></Suspense>:<main className="learning-app">
+    {showHome||pendingModule?<main className="module-index"><div className="index-heading"><h1>{pendingModule?MODULES.find(m=>m.id===pendingModule)?.name:'選擇學習主題'}</h1><p>{pendingModule?'這個模組將於後續階段製作。你現在可以先練習胎位辨識。':'從空間方向到監測判讀，依照自己的步調逐步練習。'}</p></div><div className="module-list">{MODULES.map((m,i)=><a key={m.id} href={`?module=${m.id}`} className={!m.available?'module-row future':'module-row'} onClick={e=>{e.preventDefault();navigateModule(m.id);}}><span className="module-number">0{i+1}</span><div><h2>{m.name}</h2><p>{m.subtitle}</p></div><span>{m.available?'開始學習':'後續製作'}</span><ArrowRight size={20}/></a>)}</div><p className="index-note">三個產科技能模組 · 教學試用版</p></main>:activeModule==='fetal-heart-rate'?<Suspense fallback={<main className="learning-app">正在準備胎心率教學…</main>}><FhrModule/></Suspense>:activeModule==='birth-mechanism'?<Suspense fallback={<main className="learning-app">正在準備分娩機轉教學…</main>}><BirthModule onCredits={()=>setDialog('credits')}/></Suspense>:<main className="learning-app">
       <div className="page-heading"><div><h1>胎位辨識</h1><p>轉動視角，理解胎兒與骨盆的方向關係。</p></div><button className="text-button" onClick={()=>setDialog('clear')}><Trash2 size={15}/>清除紀錄</button></div>
       <div className="learning-grid">
         <section className="visual-column" aria-label="胎位互動教學">
